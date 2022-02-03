@@ -12,20 +12,33 @@ export default class Modal extends React.Component {
     // modal components into the modal container.
     this.el = document.createElement('div');
   }
-
+  static elementReferences = [];
   componentDidMount() {
     // Append the element into the DOM on mount. We'll render
     // into the modal container element (see the HTML tab).
     modalRoot.appendChild(this.el);
+    this.props.reference.current.focus();
+    Modal.elementReferences.push(this.props.reference.current);
+    console.log('Inside Mount', Modal.elementReferences);
     let that = this;
     document.addEventListener('keydown', function (event) {
-      keyDownHandler(event, that.el);
+      if (event.key === 'Escape') {
+        console.log('Inside');
+        that.props.closeDialog();
+      } else {
+        keyDownHandler(event, that.el);
+      }
     });
   }
 
   componentWillUnmount() {
     // Remove the element from the DOM when we unmount
     modalRoot.removeChild(this.el);
+    Modal.elementReferences.pop();
+    let length = Modal.elementReferences.length;
+    let lastElem = Modal.elementReferences[length - 1];
+    lastElem.focus();
+    console.log('Inside unmount', Modal.elementReferences);
   }
 
   render() {

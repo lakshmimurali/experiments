@@ -1,5 +1,6 @@
 import React from 'react';
 import Modal from './modal.js';
+import TopModal from './topModal.js';
 import './style.css';
 
 // The Modal component is a normal React component, so we can
@@ -9,12 +10,20 @@ import './style.css';
 export default class App extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { showModal: false };
+    this.state = { showModal: false, textValue: '', showTopModal: false };
 
     this.handleShow = this.handleShow.bind(this);
+    this.handleTopModal = this.handleTopModal.bind(this);
     this.handleHide = this.handleHide.bind(this);
+    this.changeHandler = this.changeHandler.bind(this);
+    this.elementRef = React.createRef();
   }
 
+  handleTopModal() {
+    console.log('Inside >>>>>>>>>>>>>>>');
+    let toggleState = !this.state.showTopModal;
+    this.setState({ showTopModal: toggleState });
+  }
   handleShow() {
     this.setState({ showModal: true });
   }
@@ -22,13 +31,21 @@ export default class App extends React.Component {
   handleHide() {
     this.setState({ showModal: false });
   }
+  changeHandler(event) {
+    this.setState({ textValue: event.target.value });
+  }
 
   render() {
     // Show a Modal on click.
     // (In a real app, don't forget to use ARIA attributes
     // for accessibility!)
     const modal = this.state.showModal ? (
-      <Modal>
+      <Modal
+        reference={this.elementRef}
+        closeDialog={() => {
+          this.handleHide();
+        }}
+      >
         <div
           className="modal"
           role="dialog"
@@ -59,10 +76,20 @@ export default class App extends React.Component {
             >
               <b>X</b>
             </button>
+            <input
+              type="text"
+              key="exp_text"
+              ref={this.elementRef}
+              value={this.state.textValue}
+              onChange={this.changeHandler}
+            />
           </p>
           <br />
           <p>
-            <button key="2">Dummy Button 1</button>
+            <button key="2" onClick={this.handleTopModal}>
+              {' '}
+              Click Here{' '}
+            </button>
           </p>
           <br />
           <p>
@@ -74,19 +101,24 @@ export default class App extends React.Component {
 
     return (
       <div className="app">
-        <p>
+        {' '}
+        <h3>
           {' '}
-          <h3>
-            {' '}
-            React Portal Experiments.. Needed for the implementation of Modal
-            Dialog in the product.
-          </h3>
-        </p>
+          React Portal Experiments.. Needed for the implementation of Modal
+          Dialog in the product.
+        </h3>
         <br />
         <button onClick={this.handleShow} style={{ cursor: 'pointer' }}>
           Show modal
         </button>
         {modal}
+        {this.state.showTopModal ? (
+          <TopModal
+            closeDialog={() => {
+              this.handleTopModal();
+            }}
+          />
+        ) : null}
       </div>
     );
   }
