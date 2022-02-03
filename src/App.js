@@ -1,5 +1,6 @@
 import React from 'react';
 import Modal from './modal.js';
+import './style.css';
 
 // The Modal component is a normal React component, so we can
 // render it wherever we like without needing to know that it's
@@ -30,6 +31,7 @@ export default class App extends React.Component {
       <Modal>
         <div
           className="modal"
+          role="dialog"
           style={{
             border: '1px solid red',
             padding: '20px',
