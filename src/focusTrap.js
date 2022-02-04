@@ -7,10 +7,10 @@ export default function keyDownHandler(e, containerElement) {
     'a[href], button:not([disabled]), textarea, input, select'
   );
 
-  console.log(focusableModalElements);
+  //console.log(focusableModalElements);
   const firstElement = focusableModalElements[0];
   const lastElement = focusableModalElements[focusableModalElements.length - 1];
-  console.log(firstElement, lastElement);
+  //console.log(firstElement, lastElement);
 
   // if going forward by pressing tab and lastElement is active shift focus to first focusable element
   if (!e.shiftKey && document.activeElement === lastElement) {

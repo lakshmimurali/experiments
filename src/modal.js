@@ -21,7 +21,7 @@ export default class Modal extends React.Component {
     Modal.elementReferences.push(this.props.reference.current);
     console.log('Inside Mount', Modal.elementReferences);
     let that = this;
-    document.addEventListener('keydown', function (event) {
+    this.el.addEventListener('keydown', function (event) {
       if (event.key === 'Escape') {
         console.log('Inside');
         that.props.closeDialog();
@@ -37,8 +37,10 @@ export default class Modal extends React.Component {
     Modal.elementReferences.pop();
     let length = Modal.elementReferences.length;
     let lastElem = Modal.elementReferences[length - 1];
-    lastElem.focus();
-    console.log('Inside unmount', Modal.elementReferences);
+    if (lastElem) {
+      lastElem.focus();
+      console.log('Inside unmount', Modal.elementReferences);
+    }
   }
 
   render() {
