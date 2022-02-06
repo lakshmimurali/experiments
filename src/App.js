@@ -102,14 +102,15 @@ export default class App extends React.Component {
     return (
       <div className="app">
         {' '}
-        <h3>
+        <h3>Modal Support For UCL using react portal technique:</h3>
+        <p>
           {' '}
-          React Portal Experiments.. Needed for the implementation of Modal
-          Dialog in the product.
-        </h3>
+          This implementation supports the rendering of floating UIs like
+          Alert,Confirm Dialogs, Notification Messages, Pop-overs,etc..
+        </p>
         <br />
         <button onClick={this.handleShow} style={{ cursor: 'pointer' }}>
-          Show modal
+          Open a Dialog
         </button>
         {modal}
         {this.state.showTopModal ? (
