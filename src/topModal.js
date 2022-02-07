@@ -31,7 +31,7 @@ export default class TopModal extends React.Component {
             widht: '200px',
             margin: '20px',
             position: 'absolute',
-            top: '500px',
+            top: '700px',
           }}
         >
           <div>

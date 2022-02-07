@@ -18,8 +18,10 @@ export default class Modal extends React.Component {
     // into the modal container element (see the HTML tab).
     modalRoot.appendChild(this.el);
     this.props.reference.current.focus();
+    if (typeof this.props.pageref !== 'undefined') {
+      Modal.pageElementRef = this.props.pageref;
+    }
     Modal.elementReferences.push(this.props.reference.current);
-    console.log('Inside Mount', Modal.elementReferences);
     let that = this;
     this.el.addEventListener('keydown', function (event) {
       if (event.key === 'Escape') {
@@ -30,7 +32,26 @@ export default class Modal extends React.Component {
       }
     });
   }
-
+  focusElement() {
+    this.props.reference.current.focus();
+  }
+  persistElementRefrence() {
+    Modal.elementReferences.push(this.props.reference.current);
+  }
+  addEventListenersForKeyDown() {
+    let that = this;
+    this.el.addEventListener('keydown', function callBackHandler(event) {
+      if (event.key === 'Escape') {
+        console.log('Inside');
+        that.props.closeDialog();
+      } else {
+        keyDownHandler(event, that.el);
+      }
+    });
+  }
+  removeKeyBoardEventListener() {
+    this.ele.removeEventListener('keydown', callBackHandler);
+  }
   componentWillUnmount() {
     // Remove the element from the DOM when we unmount
     modalRoot.removeChild(this.el);
@@ -40,6 +61,9 @@ export default class Modal extends React.Component {
     if (lastElem) {
       lastElem.focus();
       console.log('Inside unmount', Modal.elementReferences);
+    } else {
+      let rootElem = Modal.pageElementRef;
+      rootElem.current.focus();
     }
   }
 

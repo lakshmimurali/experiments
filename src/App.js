@@ -17,6 +17,7 @@ export default class App extends React.Component {
     this.handleHide = this.handleHide.bind(this);
     this.changeHandler = this.changeHandler.bind(this);
     this.elementRef = React.createRef();
+    this.pageRef = React.createRef();
   }
 
   handleTopModal() {
@@ -42,6 +43,7 @@ export default class App extends React.Component {
     const modal = this.state.showModal ? (
       <Modal
         reference={this.elementRef}
+        pageref={this.pageRef}
         closeDialog={() => {
           this.handleHide();
         }}
@@ -52,16 +54,17 @@ export default class App extends React.Component {
           style={{
             border: '1px solid red',
             padding: '20px',
-            height: '200px',
+            height: '230px',
             widht: '200px',
             margin: '20px',
           }}
         >
-          <div>
-            With a portal, we can render content into a different part of the
-            DOM, as if it were any other React child.
+          <div style={{ textAlign: 'center', fontWeight: 'bold' }}>
+            Dialog 1
           </div>
-          This is being rendered inside the #modal-container div.
+          <p style={{ backgroundColor: 'yellow', display: 'inline-block' }}>
+            Triggered by "Open a Dialog" button.
+          </p>
           <p>
             {' '}
             <button
@@ -69,9 +72,10 @@ export default class App extends React.Component {
               onClick={this.handleHide}
               style={{
                 float: 'right',
-                cusrsor: 'pointer',
+                cursor: 'pointer',
                 position: 'relative',
-                top: '-50px',
+                top: '-100px',
+                right: '-10px',
               }}
             >
               <b>X</b>
@@ -86,9 +90,13 @@ export default class App extends React.Component {
           </p>
           <br />
           <p>
-            <button key="2" onClick={this.handleTopModal}>
+            <button
+              key="2"
+              style={{ cursor: 'pointer' }}
+              onClick={this.handleTopModal}
+            >
               {' '}
-              Click Here{' '}
+              Open Dialog 2{' '}
             </button>
           </p>
           <br />
@@ -108,8 +116,34 @@ export default class App extends React.Component {
           This implementation supports the rendering of floating UIs like
           Alert,Confirm Dialogs, Notification Messages, Pop-overs,etc..
         </p>
+        <b> Why Modal Implementation exists? </b>
+        <p>
+          {' '}
+          <span style={{ backgroundColor: 'yellow' }}>
+            {' '}
+            Reusable technique to avoid the duplication in the implementation of
+            the required features of floating UIs like{' '}
+          </span>
+          <ul>
+            <li>Trapping keyboard focus within the top most floating UI.</li>
+            <li> Closes the floating UI when user presses the escape key </li>
+            <li>
+              Maintaining the focus order, to correctly focus on the initiator
+              UI, when a floating UI got closed.
+            </li>
+            <li>
+              {' '}
+              Overlay Support to prevent accessing the underlying application
+              while floating UI exists.{' '}
+            </li>
+          </ul>{' '}
+        </p>
         <br />
-        <button onClick={this.handleShow} style={{ cursor: 'pointer' }}>
+        <button
+          ref={this.pageRef}
+          onClick={this.handleShow}
+          style={{ cursor: 'pointer' }}
+        >
           Open a Dialog
         </button>
         {modal}
