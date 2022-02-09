@@ -32,6 +32,7 @@ export default class Modal extends React.Component {
       }
     });
   }
+  /*
   focusElement() {
     this.props.reference.current.focus();
   }
@@ -52,6 +53,7 @@ export default class Modal extends React.Component {
   removeKeyBoardEventListener() {
     this.ele.removeEventListener('keydown', callBackHandler);
   }
+  */
   componentWillUnmount() {
     // Remove the element from the DOM when we unmount
     modalRoot.removeChild(this.el);
