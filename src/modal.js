@@ -84,7 +84,7 @@ export default class Modal extends React.Component {
     if (newTopElement) {
       newTopElement.focus();
       newTopElement.style.zIndex = Modal.defaultZIndex;
-      newTopElement.style.position = 'absolute';
+      Modal.overlayRef.current.style.zIndex = 1;
       console.log(newTopElement.style.zIndex);
       //Modal.defaultZIndex--;
       console.log('Inside unmount', Modal.elementReferences);
