@@ -18,6 +18,7 @@ export default class Modal extends React.Component {
     // into the modal container element (see the HTML tab).
     modalRoot.appendChild(this.el);
     this.props.reference.current.focus();
+    Modal.elementReferences.push(this.props.reference.current);
     if (typeof this.props.pageref !== 'undefined') {
       Modal.pageElementRef = this.props.pageref;
     }
@@ -27,16 +28,15 @@ export default class Modal extends React.Component {
     console.log(Modal.overlayRef);
     if (Modal.overlayRef != undefined) {
       Modal.overlayRef.current.style.display = 'block';
-      if (Modal.overlayRef.current.style.zIndex === '') {
-        Modal.zIndexValue = 2;
-      }
+      Modal.defaultZIndex = 0;
     }
     this.el.style.position = 'relative';
-    this.el.style.zIndex = +Modal.zIndexValue + 1;
-    this.el.style.backgroundColor = 'white';
-    Modal.overlayRef.current.style.zIndex = Modal.zIndexValue;
-    Modal.zIndexValue++;
-    Modal.elementReferences.push(this.props.reference.current);
+    let modalCount = +Modal.elementReferences.length;
+    this.el.style.zIndex = Modal.defaultZIndex + modalCount;
+    this.el.style.backgroundColor = '#ffffff';
+    Modal.defaultZIndex = this.el.style.zIndex;
+    Modal.overlayRef.current.style.zIndex = Modal.defaultZIndex;
+
     console.log(Modal.overlayRef.current.style.zIndex);
     let that = this;
     this.el.addEventListener('keydown', function (event) {
@@ -78,6 +78,7 @@ export default class Modal extends React.Component {
     let lastElem = Modal.elementReferences[length - 1];
     if (lastElem) {
       lastElem.focus();
+      Modal.defaultZIndex--;
       console.log('Inside unmount', Modal.elementReferences);
     } else {
       let rootElem = Modal.pageElementRef;
