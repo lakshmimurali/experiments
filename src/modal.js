@@ -13,6 +13,9 @@ export default class Modal extends React.Component {
     this.el = document.createElement('div');
   }
   static elementReferences = [];
+  static defaultZIndex = 0;
+  static overlayRef;
+  static pageElementRef;
   componentDidMount() {
     // Append the element into the DOM on mount. We'll render
     // into the modal container element (see the HTML tab).
@@ -28,14 +31,16 @@ export default class Modal extends React.Component {
     console.log(Modal.overlayRef);
     if (Modal.overlayRef != undefined) {
       Modal.overlayRef.current.style.display = 'block';
-      Modal.defaultZIndex = 0;
     }
     this.el.style.position = 'relative';
     let modalCount = +Modal.elementReferences.length;
-    this.el.style.zIndex = Modal.defaultZIndex + modalCount;
+    console.log('modalCount', modalCount);
+    console.log('Modal.defaultZIndex', Modal.defaultZIndex);
+    // Modal.overlayRef.current.style.zIndex = Modal.defaultZIndex;
+    this.el.style.zIndex = +Modal.defaultZIndex + +modalCount;
     this.el.style.backgroundColor = '#ffffff';
-    Modal.defaultZIndex = this.el.style.zIndex;
-    Modal.overlayRef.current.style.zIndex = Modal.defaultZIndex;
+    Modal.defaultZIndex = +this.el.style.zIndex;
+    Modal.overlayRef.current.style.zIndex = +Modal.defaultZIndex;
 
     console.log(Modal.overlayRef.current.style.zIndex);
     let that = this;
@@ -75,10 +80,13 @@ export default class Modal extends React.Component {
     modalRoot.removeChild(this.el);
     Modal.elementReferences.pop();
     let length = Modal.elementReferences.length;
-    let lastElem = Modal.elementReferences[length - 1];
-    if (lastElem) {
-      lastElem.focus();
-      Modal.defaultZIndex--;
+    let newTopElement = Modal.elementReferences[length - 1];
+    if (newTopElement) {
+      newTopElement.focus();
+      newTopElement.style.zIndex = Modal.defaultZIndex;
+      newTopElement.style.position = 'absolute';
+      console.log(newTopElement.style.zIndex);
+      //Modal.defaultZIndex--;
       console.log('Inside unmount', Modal.elementReferences);
     } else {
       let rootElem = Modal.pageElementRef;
