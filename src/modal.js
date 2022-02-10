@@ -26,15 +26,18 @@ export default class Modal extends React.Component {
     }
     console.log(Modal.overlayRef);
     if (Modal.overlayRef != undefined) {
-      let zIndexofOverlay = Modal.overlayRef.current.style.zIndex;
-      console.log(
-        zIndexofOverlay,
-        Modal.overlayRef.current.style,
-        Modal.overlayRef.current.style.display
-      );
       Modal.overlayRef.current.style.display = 'block';
+      if (Modal.overlayRef.current.style.zIndex === '') {
+        Modal.zIndexValue = 2;
+      }
     }
+    this.el.style.position = 'relative';
+    this.el.style.zIndex = +Modal.zIndexValue + 1;
+    this.el.style.backgroundColor = 'white';
+    Modal.overlayRef.current.style.zIndex = Modal.zIndexValue;
+    Modal.zIndexValue++;
     Modal.elementReferences.push(this.props.reference.current);
+    console.log(Modal.overlayRef.current.style.zIndex);
     let that = this;
     this.el.addEventListener('keydown', function (event) {
       if (event.key === 'Escape') {
@@ -79,6 +82,7 @@ export default class Modal extends React.Component {
     } else {
       let rootElem = Modal.pageElementRef;
       rootElem.current.focus();
+      Modal.overlayRef.current.style.display = 'none';
     }
   }
 
