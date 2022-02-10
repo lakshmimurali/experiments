@@ -21,6 +21,19 @@ export default class Modal extends React.Component {
     if (typeof this.props.pageref !== 'undefined') {
       Modal.pageElementRef = this.props.pageref;
     }
+    if (typeof this.props.overlayref !== 'undefined') {
+      Modal.overlayRef = this.props.overlayref;
+    }
+    console.log(Modal.overlayRef);
+    if (Modal.overlayRef != undefined) {
+      let zIndexofOverlay = Modal.overlayRef.current.style.zIndex;
+      console.log(
+        zIndexofOverlay,
+        Modal.overlayRef.current.style,
+        Modal.overlayRef.current.style.display
+      );
+      Modal.overlayRef.current.style.display = 'block';
+    }
     Modal.elementReferences.push(this.props.reference.current);
     let that = this;
     this.el.addEventListener('keydown', function (event) {

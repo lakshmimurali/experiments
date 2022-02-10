@@ -17,6 +17,7 @@ export default class App extends React.Component {
     this.handleHide = this.handleHide.bind(this);
     this.changeHandler = this.changeHandler.bind(this);
     this.elementRef = React.createRef();
+    this.overlayRef = React.createRef();
     this.pageRef = React.createRef();
   }
 
@@ -44,6 +45,7 @@ export default class App extends React.Component {
       <Modal
         reference={this.elementRef}
         pageref={this.pageRef}
+        overlayref={this.overlayRef}
         closeDialog={() => {
           this.handleHide();
         }}
@@ -108,53 +110,56 @@ export default class App extends React.Component {
     ) : null;
 
     return (
-      <div className="app">
-        {' '}
-        <h3>Modal Support For UCL using react portal technique:</h3>
-        <p>
+      <>
+        <div id="overlay" ref={this.overlayRef}></div>
+        <div className="app">
           {' '}
-          This implementation supports the rendering of floating UIs like
-          Alert,Confirm Dialogs, Notification Messages, Pop-overs,etc..
-        </p>
-        <b> Why Modal Implementation exists? </b>
-        <p>
-          {' '}
-          <span style={{ backgroundColor: 'yellow' }}>
+          <h3>Modal Support For UCL using react portal technique:</h3>
+          <p>
             {' '}
-            Reusable technique to avoid the duplication in the implementation of
-            the required features of floating UIs like{' '}
-          </span>
-          <ul>
-            <li>Trapping keyboard focus within the top most floating UI.</li>
-            <li> Closes the floating UI when user presses the escape key </li>
-            <li>
-              Maintaining the focus order, to correctly focus on the initiator
-              UI, when a floating UI got closed.
-            </li>
-            <li>
+            This implementation supports the rendering of floating UIs like
+            Alert,Confirm Dialogs, Notification Messages, Pop-overs,etc..
+          </p>
+          <b> Why Modal Implementation exists? </b>
+          <p>
+            {' '}
+            <span style={{ backgroundColor: 'yellow' }}>
               {' '}
-              Overlay Support to prevent accessing the underlying application
-              while floating UI exists.{' '}
-            </li>
-          </ul>{' '}
-        </p>
-        <br />
-        <button
-          ref={this.pageRef}
-          onClick={this.handleShow}
-          style={{ cursor: 'pointer' }}
-        >
-          Open a Dialog
-        </button>
-        {modal}
-        {this.state.showTopModal ? (
-          <TopModal
-            closeDialog={() => {
-              this.handleTopModal();
-            }}
-          />
-        ) : null}
-      </div>
+              Reusable technique to avoid the duplication in the implementation
+              of the required features of floating UIs like{' '}
+            </span>
+            <ul>
+              <li>Trapping keyboard focus within the top most floating UI.</li>
+              <li> Closes the floating UI when user presses the escape key </li>
+              <li>
+                Maintaining the focus order, to correctly focus on the initiator
+                UI, when a floating UI got closed.
+              </li>
+              <li>
+                {' '}
+                Overlay Support to prevent accessing the underlying application
+                while floating UI exists.{' '}
+              </li>
+            </ul>{' '}
+          </p>
+          <br />
+          <button
+            ref={this.pageRef}
+            onClick={this.handleShow}
+            style={{ cursor: 'pointer' }}
+          >
+            Open a Dialog
+          </button>
+          {modal}
+          {this.state.showTopModal ? (
+            <TopModal
+              closeDialog={() => {
+                this.handleTopModal();
+              }}
+            />
+          ) : null}
+        </div>
+      </>
     );
   }
 }
