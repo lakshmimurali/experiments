@@ -62,7 +62,12 @@ export default class Modal extends React.Component {
       let topMostElemCloseFn = topMostFloatinUIElem.closePopUp;
       topMostElemCloseFn();
       let topMostFloatingElem = Modal.floatingUIContainer.pop();
-      modalRoot.removeChild(topMostFloatingElem);
+      console.log(
+        'topMostFloatingElem',
+        topMostFloatingElem,
+        modalRoot.lastChild
+      );
+      modalRoot.removeChild(modalRoot.lastChild);
     } else {
       keyDownHandler(
         event,
@@ -101,7 +106,7 @@ export default class Modal extends React.Component {
     let newElementReference = Modal.elementReferences[length - 1];
     console.log('element reference', Modal.elementReferences);
     console.log('floatingUIContainer', Modal.floatingUIContainer);
-    if (typeof newElementReference.elemRef !== 'undefined') {
+    if (typeof newElementReference !== 'undefined') {
       console.log('Inside Multi Case');
       newElementReference.elemRef.focus();
       let currentFloatingUIContainer =
