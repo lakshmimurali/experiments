@@ -1,162 +1,139 @@
 import React from 'react';
-import Modal from './modal.js';
-import TopModal from './topModal.js';
-import './style.css';
+import ReactDOM from 'react-dom';
+import keyDownHandler from './focusTrap';
 
-// The Modal component is a normal React component, so we can
-// render it wherever we like without needing to know that it's
-// implemented with portals.
+const modalRoot = document.getElementById('modal-root');
 
-export default class App extends React.Component {
+export default class Modal extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { showModal: false, textValue: '', showTopModal: false };
+    // Create a div that we'll render the modal into. Because each
+    // Modal component has its own element, we can render multiple
+    // modal components into the modal container.
+    this.el = document.createElement('div');
+  }
+  static elementReferences = [];
+  static defaultZIndex = 0;
+  static overlayRef;
+  static pageElementRef;
+  static floatingUIContainer = [];
+  static isEventListenerAdded = false;
+  componentDidMount() {
+    // Append the element into the DOM on mount. We'll render
+    // into the modal container element (see the HTML tab).
+    modalRoot.appendChild(this.el);
+    this.props.reference.current.focus();
+    Modal.elementReferences.push({
+      elemRef: this.props.reference.current,
+      closePopUp: this.props.closeDialog,
+    });
+    Modal.floatingUIContainer.push(this.el);
+    if (typeof this.props.pageref !== 'undefined') {
+      Modal.pageElementRef = this.props.pageref;
+    }
+    if (typeof this.props.overlayref !== 'undefined') {
+      Modal.overlayRef = this.props.overlayref;
+    }
+    console.log(Modal.overlayRef);
+    if (Modal.overlayRef != undefined) {
+      Modal.overlayRef.current.style.display = 'block';
+    }
+    this.el.style.position = 'relative';
+    let modalCount = +Modal.elementReferences.length;
+    console.log('modalCount', modalCount);
+    console.log('Modal.defaultZIndex', Modal.defaultZIndex);
+    // Modal.overlayRef.current.style.zIndex = Modal.defaultZIndex;
+    this.el.style.zIndex = +Modal.defaultZIndex + +modalCount;
+    this.el.style.backgroundColor = '#ffffff';
+    Modal.defaultZIndex = +this.el.style.zIndex;
+    Modal.overlayRef.current.style.zIndex = +Modal.defaultZIndex;
 
-    this.handleShow = this.handleShow.bind(this);
-    this.handleTopModal = this.handleTopModal.bind(this);
-    this.handleHide = this.handleHide.bind(this);
-    this.changeHandler = this.changeHandler.bind(this);
-    this.elementRef = React.createRef();
-    this.overlayRef = React.createRef();
-    this.pageRef = React.createRef();
+    console.log(Modal.overlayRef.current.style.zIndex);
+    let that = this;
+    if (!Modal.isEventListenerAdded) {
+      document.addEventListener('keydown', this.handleKeyPressEvent, false);
+      Modal.isEventListenerAdded = true;
+    }
+  }
+  handleKeyPressEvent(event) {
+    if (event.key === 'Escape') {
+      console.log('Inside Escape CallBack');
+      let topMostFloatinUIElem = Modal.elementReferences.pop();
+      let topMostElemCloseFn = topMostFloatinUIElem.closePopUp;
+      topMostElemCloseFn();
+      let topMostFloatingElem = Modal.floatingUIContainer.pop();
+      console.log(
+        'topMostFloatingElem',
+        topMostFloatingElem,
+        modalRoot.lastChild
+      );
+      modalRoot.removeChild(modalRoot.lastChild);
+    } else {
+      keyDownHandler(
+        event,
+        Modal.floatingUIContainer[Modal.floatingUIContainer.length - 1]
+      );
+    }
   }
 
-  handleTopModal() {
-    console.log('Inside >>>>>>>>>>>>>>>');
-    let toggleState = !this.state.showTopModal;
-    this.setState({ showTopModal: toggleState });
+  /*
+  focusElement() {
+    this.props.reference.current.focus();
   }
-  handleShow() {
-    this.setState({ showModal: true });
+  persistElementRefrence() {
+    Modal.elementReferences.push(this.props.reference.current);
   }
+  addEventListenersForKeyDown() {
+    let that = this;
+    this.el.addEventListener('keydown', function callBackHandler(event) {
+      if (event.key === 'Escape') {
+        console.log('Inside');
+        that.props.closeDialog();
+      } else {
+        keyDownHandler(event, that.el);
+      }
+    });
+  }
+  removeKeyBoardEventListener() {
+    this.ele.removeEventListener('keydown', callBackHandler);
+  }
+  */
+  componentWillUnmount() {
+    console.log('Inside Component Will UnMount');
+    // Remove the element from the DOM when we unmount
 
-  handleHide() {
-    this.setState({ showModal: false });
-  }
-  changeHandler(event) {
-    this.setState({ textValue: event.target.value });
+    let length = Modal.elementReferences.length;
+    let newElementReference = Modal.elementReferences[length - 1];
+    console.log('element reference', Modal.elementReferences);
+    console.log('floatingUIContainer', Modal.floatingUIContainer);
+    if (typeof newElementReference !== 'undefined') {
+      console.log('Inside Multi Case');
+      newElementReference.elemRef.focus();
+      let currentFloatingUIContainer =
+        Modal.floatingUIContainer[Modal.floatingUIContainer.length - 1];
+      currentFloatingUIContainer.style.zIndex = Modal.defaultZIndex;
+      //Modal.defaultZIndex--;
+      console.log('Inside unmount', Modal.elementReferences);
+    } else {
+      console.log('Inside Last Case');
+      let rootElem = Modal.pageElementRef;
+      rootElem.current.focus();
+      Modal.overlayRef.current.style.display = 'none';
+      Modal.overlayRef.current.style.zIndex = '';
+      Modal.overlayRef = null;
+      Modal.pageElementRef = null;
+      Modal.defaultZIndex = 0;
+      document.removeEventListener('keydown', this.handleKeyPressEvent);
+    }
   }
 
   render() {
-    // Show a Modal on click.
-    // (In a real app, don't forget to use ARIA attributes
-    // for accessibility!)
-    const modal = this.state.showModal ? (
-      <Modal
-        reference={this.elementRef}
-        pageref={this.pageRef}
-        overlayref={this.overlayRef}
-        closeDialog={() => {
-          this.handleHide();
-        }}
-      >
-        <div
-          className="modal"
-          role="dialog"
-          style={{
-            border: '1px solid red',
-            height: '250px',
-          }}
-        >
-          <div style={{ textAlign: 'center', fontWeight: 'bold' }}>
-            Dialog 1
-          </div>
-          <p style={{ backgroundColor: 'yellow', display: 'inline-block' }}>
-            Triggered by "Open a Dialog" button.
-          </p>
-          <p>
-            {' '}
-            <button
-              key="1"
-              onClick={this.handleHide}
-              style={{
-                float: 'right',
-                cursor: 'pointer',
-                position: 'relative',
-                top: '-100px',
-                right: '-10px',
-              }}
-            >
-              <b>X</b>
-            </button>
-            <input
-              type="text"
-              key="exp_text"
-              ref={this.elementRef}
-              value={this.state.textValue}
-              onChange={this.changeHandler}
-            />
-          </p>
-          <br />
-          <p>
-            <button
-              key="2"
-              style={{ cursor: 'pointer' }}
-              onClick={this.handleTopModal}
-            >
-              {' '}
-              Open Dialog 2{' '}
-            </button>
-          </p>
-          <br />
-          <p>
-            <button key="3">Dummy Button 2</button>
-          </p>
-        </div>
-      </Modal>
-    ) : null;
-
-    return (
-      <>
-        <div id="overlay" ref={this.overlayRef}></div>
-        <div className="app">
-          {' '}
-          <h3>Modal Support For UCL using react portal technique:</h3>
-          <p>
-            {' '}
-            This implementation supports the rendering of floating UIs like
-            Alert,Confirm Dialogs, Notification Messages, Pop-overs,etc..
-          </p>
-          <b> Why Modal Implementation exists? </b>
-          <p>
-            {' '}
-            <span style={{ backgroundColor: 'yellow' }}>
-              {' '}
-              Reusable technique to avoid the duplication in the implementation
-              of the required features of floating UIs like{' '}
-            </span>
-            <ul>
-              <li>Trapping keyboard focus within the top most floating UI.</li>
-              <li> Closes the floating UI when user presses the escape key </li>
-              <li>
-                Maintaining the focus order, to correctly focus on the initiator
-                UI, when a floating UI got closed.
-              </li>
-              <li>
-                {' '}
-                Overlay Support to prevent accessing the underlying application
-                while floating UI exists.{' '}
-              </li>
-            </ul>{' '}
-          </p>
-          <br />
-          <button
-            ref={this.pageRef}
-            onClick={this.handleShow}
-            style={{ cursor: 'pointer' }}
-          >
-            Open a Dialog
-          </button>
-          {modal}
-          {this.state.showTopModal ? (
-            <TopModal
-              closeDialog={() => {
-                this.handleTopModal();
-              }}
-            />
-          ) : null}
-        </div>
-      </>
+    // Use a portal to render the children into the element
+    return ReactDOM.createPortal(
+      // Any valid React child: JSX, strings, arrays, etc.
+      this.props.children,
+      // A DOM element
+      this.el
     );
   }
 }
