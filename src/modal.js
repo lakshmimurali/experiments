@@ -124,6 +124,7 @@ export default class Modal extends React.Component {
       Modal.pageElementRef = null;
       Modal.defaultZIndex = 0;
       document.removeEventListener('keydown', this.handleKeyPressEvent);
+      Modal.isEventListenerAdded = false;
     }
   }
 
