@@ -56,7 +56,6 @@ export default class App extends React.Component {
           style={{
             border: '1px solid red',
             height: '250px',
-            widht: '200px',
           }}
         >
           <div style={{ textAlign: 'center', fontWeight: 'bold' }}>

@@ -27,7 +27,6 @@ export default class TopModal extends React.Component {
           style={{
             border: '1px solid green',
             height: '200px',
-            width: '200px',
           }}
         >
           <div>
