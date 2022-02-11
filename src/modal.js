@@ -18,6 +18,7 @@ export default class Modal extends React.Component {
   static pageElementRef;
   static floatingUIContainer = [];
   static isEventListenerAdded = false;
+  static isEscapeEvent = false;
   componentDidMount() {
     // Append the element into the DOM on mount. We'll render
     // into the modal container element (see the HTML tab).
@@ -57,6 +58,7 @@ export default class Modal extends React.Component {
   }
   handleKeyPressEvent(event) {
     if (event.key === 'Escape') {
+      Modal.isEscapeEvent = true;
       console.log('Inside Escape CallBack');
       let topMostFloatinUIElem = Modal.elementReferences.pop();
       let topMostElemCloseFn = topMostFloatinUIElem.closePopUp;
@@ -101,7 +103,10 @@ export default class Modal extends React.Component {
   componentWillUnmount() {
     console.log('Inside Component Will UnMount');
     // Remove the element from the DOM when we unmount
-
+    if (!Modal.isEscapeEvent) {
+      Modal.elementReferences.pop();
+      Modal.floatingUIContainer.pop();
+    }
     let length = Modal.elementReferences.length;
     let newElementReference = Modal.elementReferences[length - 1];
     console.log('element reference', Modal.elementReferences);
@@ -126,6 +131,7 @@ export default class Modal extends React.Component {
       document.removeEventListener('keydown', this.handleKeyPressEvent);
       Modal.isEventListenerAdded = false;
     }
+    Modal.isEscapeEvent = false;
   }
 
   render() {
