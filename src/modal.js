@@ -50,7 +50,7 @@ export default class Modal extends React.Component {
     Modal.overlayRef.current.style.zIndex = +Modal.defaultZIndex;
 
     console.log(Modal.overlayRef.current.style.zIndex);
-    let that = this;
+
     if (!Modal.isEventListenerAdded) {
       document.addEventListener('keydown', this.handleKeyPressEvent, false);
       Modal.isEventListenerAdded = true;
@@ -60,16 +60,12 @@ export default class Modal extends React.Component {
     if (event.key === 'Escape') {
       Modal.isEscapeEvent = true;
       console.log('Inside Escape CallBack');
-      let topMostFloatinUIElem = Modal.elementReferences.pop();
-      let topMostElemCloseFn = topMostFloatinUIElem.closePopUp;
+      let topMostFloatingContainer = Modal.floatingUIContainer.pop();
+      //modalRoot.removeChild(modalRoot.lastChild);
+      modalRoot.removeChild(topMostFloatingContainer);
+      let topMostFloatingUIElem = Modal.elementReferences.pop();
+      let topMostElemCloseFn = topMostFloatingUIElem.closePopUp;
       topMostElemCloseFn();
-      let topMostFloatingElem = Modal.floatingUIContainer.pop();
-      console.log(
-        'topMostFloatingElem',
-        topMostFloatingElem,
-        modalRoot.lastChild
-      );
-      modalRoot.removeChild(modalRoot.lastChild);
     } else {
       keyDownHandler(
         event,
@@ -116,6 +112,7 @@ export default class Modal extends React.Component {
       newElementReference.elemRef.focus();
       let currentFloatingUIContainer =
         Modal.floatingUIContainer[Modal.floatingUIContainer.length - 1];
+      console.log('Modal.defaultZIndex', Modal.defaultZIndex);
       currentFloatingUIContainer.style.zIndex = Modal.defaultZIndex;
       //Modal.defaultZIndex--;
       console.log('Inside unmount', Modal.elementReferences);
