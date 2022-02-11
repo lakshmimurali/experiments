@@ -55,10 +55,8 @@ export default class App extends React.Component {
           role="dialog"
           style={{
             border: '1px solid red',
-            padding: '20px',
             height: '250px',
             widht: '200px',
-            margin: '20px',
           }}
         >
           <div style={{ textAlign: 'center', fontWeight: 'bold' }}>

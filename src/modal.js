@@ -16,12 +16,14 @@ export default class Modal extends React.Component {
   static defaultZIndex = 0;
   static overlayRef;
   static pageElementRef;
+  static floatingUIContainer = [];
   componentDidMount() {
     // Append the element into the DOM on mount. We'll render
     // into the modal container element (see the HTML tab).
     modalRoot.appendChild(this.el);
     this.props.reference.current.focus();
     Modal.elementReferences.push(this.props.reference.current);
+    Modal.floatingUIContainer.push(this.el);
     if (typeof this.props.pageref !== 'undefined') {
       Modal.pageElementRef = this.props.pageref;
     }
@@ -79,19 +81,24 @@ export default class Modal extends React.Component {
     // Remove the element from the DOM when we unmount
     modalRoot.removeChild(this.el);
     Modal.elementReferences.pop();
+    Modal.floatingUIContainer.pop();
     let length = Modal.elementReferences.length;
-    let newTopElement = Modal.elementReferences[length - 1];
-    if (newTopElement) {
-      newTopElement.focus();
-      newTopElement.style.zIndex = Modal.defaultZIndex;
-      Modal.overlayRef.current.style.zIndex = 1;
-      console.log(newTopElement.style.zIndex);
+    let newElementReference = Modal.elementReferences[length - 1];
+    if (newElementReference) {
+      newElementReference.focus();
+      let currentFloatingUIContainer =
+        Modal.floatingUIContainer[Modal.floatingUIContainer.length - 1];
+      currentFloatingUIContainer.style.zIndex = Modal.defaultZIndex;
       //Modal.defaultZIndex--;
       console.log('Inside unmount', Modal.elementReferences);
     } else {
       let rootElem = Modal.pageElementRef;
       rootElem.current.focus();
       Modal.overlayRef.current.style.display = 'none';
+      Modal.overlayRef.current.style.zIndex = '';
+      Modal.overlayRef = null;
+      Modal.pageElementRef = null;
+      Modal.defaultZIndex = 0;
     }
   }
 

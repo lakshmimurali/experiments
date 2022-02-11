@@ -26,10 +26,8 @@ export default class TopModal extends React.Component {
           role="dialog"
           style={{
             border: '1px solid green',
-            padding: '20px',
             height: '200px',
-            widht: '200px',
-            margin: '20px',
+            width: '200px',
           }}
         >
           <div>
