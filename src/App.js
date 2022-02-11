@@ -27,6 +27,7 @@ export default class App extends React.Component {
     this.setState({ showTopModal: toggleState });
   }
   handleShow() {
+    console.log('Inside Handle Show');
     this.setState({ showModal: true });
   }
 
