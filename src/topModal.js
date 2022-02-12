@@ -30,7 +30,7 @@ export default class TopModal extends React.Component {
           }}
         >
           <div>
-            Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah
+            Sample Input
             <input type="text" ref={this.elementRef} key="exp1_text" />
             <button
               key="2"
