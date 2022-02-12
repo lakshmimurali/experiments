@@ -1,5 +1,6 @@
 import React from 'react';
 import Modal from './modal.js';
+import Dialog from './Dialog.js';
 import './style.css';
 
 // The Modal component is a normal React component, so we can
@@ -21,33 +22,10 @@ export default class TopModal extends React.Component {
           this.props.closeDialog();
         }}
       >
-        <div
-          className="modal1"
-          role="dialog"
-          style={{
-            border: '1px solid green',
-            height: '200px',
-          }}
-        >
-          <div>
-            Sample Input
-            <input type="text" ref={this.elementRef} key="exp1_text" />
-            <button
-              key="2"
-              onClick={this.props.closeDialog}
-              style={{
-                float: 'right',
-                cusrsor: 'pointer',
-                position: 'relative',
-                top: '-20px',
-              }}
-            >
-              <b>X</b>
-            </button>
-          </div>
-
-          <br />
-        </div>
+        <Dialog
+          elementRef={this.elementRef}
+          closeDialog={this.props.closeDialog}
+        ></Dialog>
       </Modal>
     );
   }
