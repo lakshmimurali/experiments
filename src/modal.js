@@ -40,6 +40,7 @@ export default class Modal extends React.Component {
     this.applyZIndexToOverlayEement();
 
     this.persistPageElementReference();
+
     this.bindKeyDownEventToDocument();
   }
   persistFloatingUIContainerElement() {
@@ -171,7 +172,6 @@ export default class Modal extends React.Component {
     this.resetisEventListenerAddedProperty();
   }
   componentWillUnmount() {
-    console.log('Inside Component Will UnMount');
     // Remove the element from the DOM when we unmount
     if (!Modal.isEscapeKeyPressed) {
       Modal.removeTopMostFloatingDialogElement();
