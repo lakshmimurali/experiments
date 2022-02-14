@@ -14,7 +14,7 @@ export default class Modal extends React.Component {
   }
   static dialogElementReferencesList = [];
   static defaultZIndex = 0;
-  static overlayRef;
+  static overlayReference;
   static pageElementReference;
   static floatingUIContainerElementList = [];
   static isKeyDownEventListenerConfigured = false;
@@ -23,17 +23,17 @@ export default class Modal extends React.Component {
     // Append the element into the DOM on mount. We'll render
     // into the modal container element (see the HTML tab).
     modalRoot.appendChild(this.el);
-    persistFloatingUIContainerElement();
-    applyStyleTofloatingUIContainerElement();
+    this.persistFloatingUIContainerElement();
+    this.applyStyleTofloatingUIContainerElement();
 
-    persistFloatingDialogElementReference();
-    applyFocusToFloatingDialogElement();
+    this.persistFloatingDialogElementReference();
+    this.applyFocusToFloatingDialogElement();
 
-    persistOverlayElementReference();
-    showOverlayElement();
+    this.persistOverlayElementReference();
+    this.showOverlayElement();
 
-    persistPageElementReference();
-    bindKeyDownEventToDocument();
+    this.persistPageElementReference();
+    this.bindKeyDownEventToDocument();
   }
   bindKeyDownEventToDocument() {
     if (!Modal.isKeyDownEventListenerConfigured) {
@@ -58,8 +58,7 @@ export default class Modal extends React.Component {
     });
   }
   applyFocusToFloatingDialogElement() {
-    getTopMostDialogElementReference().dialogElemRef.focus();
-    this.props.reference.current.focus();
+    this.getTopMostDialogElementReference().dialogElemRef.focus();
   }
 
   persistZIndexValue() {
@@ -71,38 +70,38 @@ export default class Modal extends React.Component {
   handleKeyPressEvent(event) {
     if (event.key === 'Escape') {
       Modal.isEscapeKeyPressed = true;
-      removeTopMostFloatingUIContainerElement();
-      invokeCloseCallBackFunctionOfTopDialogElement();
+      this.removeTopMostFloatingUIContainerElement();
+      this.invokeCloseCallBackFunctionOfTopDialogElement();
     } else {
-      focusTrap(event, getTopMostFloatingUIContainerElement());
+      focusTrap(event, this.getTopMostFloatingUIContainerElement());
     }
   }
 
   persistPageElementReference() {
     if (typeof this.props.pageref !== 'undefined') {
-      Modal.pageElementRef = this.props.pageref;
+      Modal.pageElementReference = this.props.pageref;
     }
   }
   applyFocusToPageElementReference() {
-    Modal.pageElementRef.current.focus();
+    Modal.pageElementReference.current.focus();
   }
   resetPageElementReference() {
-    Modal.pageElementRef = null;
+    Modal.pageElementReference = null;
   }
   persistOverlayElementReference() {
     if (typeof this.props.overlayref !== 'undefined') {
-      Modal.overlayRef = this.props.overlayref;
+      Modal.overlayReference = this.props.overlayref;
     }
   }
   showOverlayElement() {
-    if (Modal.overlayRef != undefined) {
-      Modal.overlayRef.current.style.display = 'block';
+    if (Modal.overlayReference != undefined) {
+      Modal.overlayReference.current.style.display = 'block';
     }
   }
   applyStyleToOverlayElement() {
-    Modal.overlayRef.current.style.display = 'none';
-    Modal.overlayRef.current.style.zIndex = '';
-    Modal.overlayRef = null;
+    Modal.overlayReference.current.style.display = 'none';
+    Modal.overlayReference.current.style.zIndex = '';
+    Modal.overlayReference = null;
   }
 
   resetDefaultZIndex() {
@@ -132,33 +131,33 @@ export default class Modal extends React.Component {
     return topMostFloatingUIElem();
   }
   invokeCloseCallBackFunctionOfTopMostDialogElement() {
-    removeTopMostFloatingDialogElement().closePopUp();
+    this.removeTopMostFloatingDialogElement().closePopUp();
   }
   resetisEventListenerAddedProperty() {
     Modal.isKeyDownEventListenerConfigured = false;
   }
   resetModalBoxValues() {
-    applyFocusToPageElementReference();
-    resetPageElementReference();
-    resetDefaultZIndex();
-    applyStyleToOverlayElement();
-    unbindKeyDownEventListener();
-    resetisEventListenerAddedProperty();
+    this.applyFocusToPageElementReference();
+    this.resetPageElementReference();
+    this.resetDefaultZIndex();
+    this.applyStyleToOverlayElement();
+    this.unbindKeyDownEventListener();
+    this.resetisEventListenerAddedProperty();
   }
   componentWillUnmount() {
     console.log('Inside Component Will UnMount');
     // Remove the element from the DOM when we unmount
     if (!Modal.isEscapeEvent) {
-      removeTopMostFloatingDialogElement();
-      removeTopMostFloatingUIContainerElement();
+      this.removeTopMostFloatingDialogElement();
+      this.removeTopMostFloatingUIContainerElement();
     }
 
     if (typeof getTopMostDialogElementReference() !== 'undefined') {
-      applyFocusToFloatingDialogElement();
-      applyZIndexToFloatingContainerElement();
+      this.applyFocusToFloatingDialogElement();
+      this.applyZIndexToFloatingContainerElement();
     } else {
-      applyFocusToPageElementReference();
-      resetModalBoxValues();
+      this.applyFocusToPageElementReference();
+      this.resetModalBoxValues();
     }
     Modal.isEscapeKeyPressed = false;
   }
