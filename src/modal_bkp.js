@@ -24,7 +24,10 @@ export default class Modal extends React.Component {
     // into the modal container element (see the HTML tab).
     modalRoot.appendChild(this.el);
     this.persistFloatingUIContainerElement();
-    this.applyStyleTofloatingUIContainerElement();
+    this.applyStyleToFloatingUIContainerElement(thie.el, {
+      position: 'relative',
+      backgroundColor: '#ffffff',
+    });
 
     this.persistFloatingDialogElementReference();
     this.applyFocusToFloatingDialogElement();
@@ -44,11 +47,13 @@ export default class Modal extends React.Component {
   persistFloatingUIContainerElement() {
     Modal.floatingUIContainerElementList.push(this.el);
   }
-  applyStyleTofloatingUIContainerElement() {
+  applyStyleToFloatingUIContainerElement(modalObj, styleObj) {
+    Object.assign(modalObj.style, styleObj);
+  }
+  applyZIndexToFloatingContainerElement(modalObj) {
     let count = +Modal.floatingUIContainerElementList.length;
-    this.el.style.position = 'relative';
-    this.el.style.zIndex = +Modal.defaultZIndex + +count;
-    this.el.style.backgroundColor = '#ffffff';
+    let styleObj = { zIndex: Modal.defaultZIndex + +count };
+    Object.assign(modalObj.style, styleObj);
   }
 
   persistFloatingDialogElementReference() {
@@ -156,7 +161,9 @@ export default class Modal extends React.Component {
 
     if (typeof getTopMostDialogElementReference() !== 'undefined') {
       this.applyFocusToFloatingDialogElement();
-      this.applyZIndexToFloatingContainerElement();
+      this.applyZIndexToFloatingContainerElement(
+        getTopMostFloatingUIContainerElement()
+      );
     } else {
       this.applyFocusToPageElementReference();
       this.resetModalBoxValues();
