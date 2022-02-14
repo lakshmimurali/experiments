@@ -1,4 +1,4 @@
-export default function keyDownHandler(e, containerElement) {
+export default function focusTrap(e, containerElement) {
   // only execute if tab is pressed
   if (e.key !== 'Tab') return;
   console.log(containerElement);
