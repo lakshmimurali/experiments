@@ -12,11 +12,11 @@ export default class Modal extends React.Component {
     // modal components into the modal container.
     this.el = document.createElement('div');
   }
+  static floatingUIContainerElementList = [];
   static dialogElementReferencesList = [];
-  static defaultZIndex = 0;
   static overlayReference;
   static pageElementReference;
-  static floatingUIContainerElementList = [];
+  static defaultZIndex = 0;
   static isKeyDownEventListenerConfigured = false;
   static isEscapeKeyPressed = false;
   componentDidMount() {
@@ -70,6 +70,13 @@ export default class Modal extends React.Component {
   applyFocusToFloatingDialogElement() {
     this.getTopMostDialogElementReference().dialogElemRef.focus();
   }
+
+  getTopMostDialogElementReference() {
+    let lengthofDialogElements = Modal.dialogElementReferencesList.length;
+    let topDialogElementReference =
+      Modal.elementReferences[lengthofDialogElements - 1];
+    return topDialogElementReference;
+  }
   bindKeyDownEventToDocument() {
     if (this.checkStatusOfKeyDownEventBoundToDocument()) {
       document.addEventListener('keydown', this.handleKeyPressEvent, false);
@@ -110,13 +117,6 @@ export default class Modal extends React.Component {
     return topMostFloatingUIElem();
   }
 
-  getTopMostDialogElementReference() {
-    let lengthofDialogElements = Modal.dialogElementReferencesList.length;
-    let topDialogElementReference =
-      Modal.elementReferences[lengthofDialogElements - 1];
-    return topDialogElementReference;
-  }
-
   resetDefaultZIndex() {
     Modal.defaultZIndex = 0;
   }
@@ -144,7 +144,7 @@ export default class Modal extends React.Component {
   }
   showOverlayElement() {
     if (Modal.overlayReference != undefined) {
-      Modal.overlayReference.current.style.display = 'block';
+      Modal.overlayRpropseference.current.style.display = 'block';
     }
   }
   applyStyleToOverlayElement(styleObj) {
