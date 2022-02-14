@@ -137,7 +137,9 @@ export default class Modal extends React.Component {
     Modal.isKeyDownEventListenerConfigured = false;
   }
   resetModalBoxValues() {
+    //Restore Focus
     this.applyFocusToPageElementReference();
+
     this.resetPageElementReference();
     this.resetDefaultZIndex();
     this.applyStyleToOverlayElement();
