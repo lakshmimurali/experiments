@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import keyDownHandler from './focusTrap';
+import focusTrap from './focusTrap';
 
 const modalRoot = document.getElementById('modal-root');
 
@@ -12,123 +12,181 @@ export default class Modal extends React.Component {
     // modal components into the modal container.
     this.el = document.createElement('div');
   }
-  static elementReferences = [];
+  static floatingUIContainerElementList = [];
+  static dialogElementReferencesList = [];
+  static overlayReference;
+  static pageElementReference;
   static defaultZIndex = 0;
-  static overlayRef;
-  static pageElementRef;
-  static floatingUIContainer = [];
-  static isEventListenerAdded = false;
-  static isEscapeEvent = false;
+  static isKeyDownEventListenerConfigured = false;
+  static isEscapeKeyPressed = false;
   componentDidMount() {
     // Append the element into the DOM on mount. We'll render
     // into the modal container element (see the HTML tab).
     modalRoot.appendChild(this.el);
-    this.props.reference.current.focus();
-    Modal.elementReferences.push({
-      elemRef: this.props.reference.current,
-      closePopUp: this.props.closeDialog,
+    this.persistFloatingUIContainerElement();
+    this.applyStyleToFloatingUIContainerElement(this.el, {
+      position: 'relative',
+      backgroundColor: '#ffffff',
     });
-    Modal.floatingUIContainer.push(this.el);
-    if (typeof this.props.pageref !== 'undefined') {
-      Modal.pageElementRef = this.props.pageref;
-    }
-    if (typeof this.props.overlayref !== 'undefined') {
-      Modal.overlayRef = this.props.overlayref;
-    }
-    console.log(Modal.overlayRef);
-    if (Modal.overlayRef != undefined) {
-      Modal.overlayRef.current.style.display = 'block';
-    }
-    this.el.style.position = 'relative';
-    let modalCount = +Modal.elementReferences.length;
-    console.log('modalCount', modalCount);
-    console.log('Modal.defaultZIndex', Modal.defaultZIndex);
-    // Modal.overlayRef.current.style.zIndex = Modal.defaultZIndex;
-    this.el.style.zIndex = +Modal.defaultZIndex + +modalCount;
-    this.el.style.backgroundColor = '#ffffff';
-    Modal.defaultZIndex = +this.el.style.zIndex;
-    Modal.overlayRef.current.style.zIndex = +Modal.defaultZIndex;
+    this.applyZIndexToFloatingContainerElement(this.el);
 
-    console.log(Modal.overlayRef.current.style.zIndex);
+    this.persistZIndexValue(this.el);
 
-    if (!Modal.isEventListenerAdded) {
+    this.persistFloatingDialogElementReference();
+    this.applyFocusToFloatingDialogElement();
+
+    this.persistOverlayElementReference();
+    this.showOverlayElement();
+    this.applyZIndexToOverlayEement();
+
+    this.persistPageElementReference();
+    this.bindKeyDownEventToDocument();
+  }
+  persistFloatingUIContainerElement() {
+    Modal.floatingUIContainerElementList.push(this.el);
+  }
+
+  applyStyleToFloatingUIContainerElement(modalObj, styleObj) {
+    Object.assign(modalObj.style, styleObj);
+  }
+
+  applyZIndexToFloatingContainerElement(modalObj) {
+    let count = Modal.floatingUIContainerElementList.length;
+    let styleObj = { zIndex: Modal.defaultZIndex + +count };
+    Object.assign(modalObj.style, styleObj);
+  }
+
+  persistZIndexValue(elemObj) {
+    Modal.defaultZIndex = elemObj.style.zIndex;
+  }
+
+  persistFloatingDialogElementReference() {
+    Modal.dialogElementReferencesList.push({
+      dialogElemRef: this.props.reference.current,
+      functionReferenceToClose: this.props.closeDialog,
+    });
+  }
+
+  applyFocusToFloatingDialogElement() {
+    this.getTopMostDialogElementReference().dialogElemRef.focus();
+  }
+
+  getTopMostDialogElementReference() {
+    let lengthofDialogElements = Modal.dialogElementReferencesList.length;
+    let topDialogElementReference =
+      Modal.dialogElementReferencesList[lengthofDialogElements - 1];
+    return topDialogElementReference;
+  }
+
+  bindKeyDownEventToDocument() {
+    if (!this.checkStatusOfKeyDownEventBoundToDocument()) {
       document.addEventListener('keydown', this.handleKeyPressEvent, false);
-      Modal.isEventListenerAdded = true;
+      this.setKeyDownEventBoundToDocumentStatusToTrue();
     }
+  }
+  checkStatusOfKeyDownEventBoundToDocument() {
+    return Modal.isKeyDownEventListenerConfigured;
+  }
+  setKeyDownEventBoundToDocumentStatusToTrue() {
+    Modal.isKeyDownEventListenerConfigured = true;
   }
   handleKeyPressEvent(event) {
     if (event.key === 'Escape') {
-      Modal.isEscapeEvent = true;
-      console.log('Inside Escape CallBack');
-      let topMostFloatingContainer = Modal.floatingUIContainer.pop();
-      //modalRoot.removeChild(modalRoot.lastChild);
-      modalRoot.removeChild(topMostFloatingContainer);
-      let topMostFloatingUIElem = Modal.elementReferences.pop();
-      let topMostElemCloseFn = topMostFloatingUIElem.closePopUp;
-      topMostElemCloseFn();
+      Modal.isEscapeKeyPressed = true;
+      Modal.removeTopMostFloatingUIContainerElement();
+      Modal.invokeCloseCallBackFunctionOfTopMostDialogElement();
     } else {
-      keyDownHandler(
-        event,
-        Modal.floatingUIContainer[Modal.floatingUIContainer.length - 1]
-      );
+      focusTrap(event, Modal.getTopMostFloatingUIContainerElement());
     }
   }
+  static removeTopMostFloatingUIContainerElement() {
+    let topMostFloatingContainer = Modal.floatingUIContainerElementList.pop();
+    modalRoot.removeChild(topMostFloatingContainer);
+  }
 
-  /*
-  focusElement() {
-    this.props.reference.current.focus();
+  static invokeCloseCallBackFunctionOfTopMostDialogElement() {
+    Modal.removeTopMostFloatingDialogElement().functionReferenceToClose();
   }
-  persistElementRefrence() {
-    Modal.elementReferences.push(this.props.reference.current);
+  static getTopMostFloatingUIContainerElement() {
+    let lengthOfUIContainerElement =
+      Modal.floatingUIContainerElementList.length;
+    return Modal.floatingUIContainerElementList[lengthOfUIContainerElement - 1];
   }
-  addEventListenersForKeyDown() {
-    let that = this;
-    this.el.addEventListener('keydown', function callBackHandler(event) {
-      if (event.key === 'Escape') {
-        console.log('Inside');
-        that.props.closeDialog();
-      } else {
-        keyDownHandler(event, that.el);
-      }
-    });
+
+  static removeTopMostFloatingDialogElement() {
+    let topMostFloatingUIElem = Modal.dialogElementReferencesList.pop();
+    return topMostFloatingUIElem;
   }
-  removeKeyBoardEventListener() {
-    this.ele.removeEventListener('keydown', callBackHandler);
+
+  resetDefaultZIndex() {
+    Modal.defaultZIndex = 0;
   }
-  */
+
+  persistPageElementReference() {
+    if (typeof this.props.pageref !== 'undefined') {
+      Modal.pageElementReference = this.props.pageref;
+    }
+  }
+  applyFocusToPageElementReference() {
+    Modal.pageElementReference.current.focus();
+  }
+  resetPageElementReference() {
+    Modal.pageElementReference = null;
+  }
+
+  applyZIndexToOverlayEement() {
+    Modal.overlayReference.style.zIndex = Modal.defaultZIndex;
+  }
+
+  persistOverlayElementReference() {
+    if (typeof this.props.overlayref !== 'undefined') {
+      Modal.overlayReference = this.props.overlayref.current;
+    }
+  }
+  showOverlayElement() {
+    if (Modal.overlayReference != undefined) {
+      Modal.overlayReference.style.display = 'block';
+    }
+  }
+  applyStyleToOverlayElement(styleObj) {
+    Object.assign(Modal.overlayReference.style, styleObj);
+  }
+  resetOverlayReference() {
+    Modal.overlayReference = null;
+  }
+  resetisEventListenerAddedProperty() {
+    Modal.isKeyDownEventListenerConfigured = false;
+  }
+  unbindKeyDownEventListener() {
+    document.removeEventListener('keydown', this.handleKeyPressEvent);
+  }
+  resetModalBoxValues() {
+    //Restore Focus
+    this.applyFocusToPageElementReference();
+
+    this.resetPageElementReference();
+    this.resetDefaultZIndex();
+    this.applyStyleToOverlayElement({ display: 'none', zIndex: '' });
+    this.unbindKeyDownEventListener();
+    this.resetisEventListenerAddedProperty();
+  }
   componentWillUnmount() {
     console.log('Inside Component Will UnMount');
     // Remove the element from the DOM when we unmount
-    if (!Modal.isEscapeEvent) {
-      Modal.elementReferences.pop();
-      Modal.floatingUIContainer.pop();
+    if (!Modal.isEscapeKeyPressed) {
+      Modal.removeTopMostFloatingDialogElement();
+      Modal.removeTopMostFloatingUIContainerElement();
     }
-    let length = Modal.elementReferences.length;
-    let newElementReference = Modal.elementReferences[length - 1];
-    console.log('element reference', Modal.elementReferences);
-    console.log('floatingUIContainer', Modal.floatingUIContainer);
-    if (typeof newElementReference !== 'undefined') {
-      console.log('Inside Multi Case');
-      newElementReference.elemRef.focus();
-      let currentFloatingUIContainer =
-        Modal.floatingUIContainer[Modal.floatingUIContainer.length - 1];
-      console.log('Modal.defaultZIndex', Modal.defaultZIndex);
-      currentFloatingUIContainer.style.zIndex = Modal.defaultZIndex;
-      //Modal.defaultZIndex--;
-      console.log('Inside unmount', Modal.elementReferences);
+
+    if (typeof this.getTopMostDialogElementReference() !== 'undefined') {
+      this.applyFocusToFloatingDialogElement();
+      this.applyZIndexToFloatingContainerElement(
+        Modal.getTopMostFloatingUIContainerElement()
+      );
     } else {
-      console.log('Inside Last Case');
-      let rootElem = Modal.pageElementRef;
-      rootElem.current.focus();
-      Modal.overlayRef.current.style.display = 'none';
-      Modal.overlayRef.current.style.zIndex = '';
-      Modal.overlayRef = null;
-      Modal.pageElementRef = null;
-      Modal.defaultZIndex = 0;
-      document.removeEventListener('keydown', this.handleKeyPressEvent);
-      Modal.isEventListenerAdded = false;
+      this.resetModalBoxValues();
     }
-    Modal.isEscapeEvent = false;
+    Modal.isEscapeKeyPressed = false;
   }
 
   render() {
