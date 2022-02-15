@@ -105,7 +105,7 @@ export default class Modal extends React.Component {
       Modal.isEscapeKeyPressed = true;
       Modal.removeTopMostFloatingUIContainerElement();
       Modal.invokeCloseCallBackFunctionOfTopMostDialogElement();
-    } else {
+    } else if (event.key === 'Tab') {
       focusTrap(event, Modal.getTopMostFloatingUIContainerElement());
     }
   }
@@ -126,9 +126,6 @@ export default class Modal extends React.Component {
   static getTopMostFloatingUIContainerElement() {
     let lengthOfUIContainerElement =
       Modal.floatingUIContainerElementList.length;
-    console.log(
-      Modal.floatingUIContainerElementList[lengthOfUIContainerElement - 1]
-    );
     return Modal.floatingUIContainerElementList[lengthOfUIContainerElement - 1]
       .floatinguicontainerelement;
   }
