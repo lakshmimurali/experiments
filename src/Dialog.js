@@ -1,5 +1,6 @@
 import React from 'react';
 export default function Dialog(props) {
+  console.log(props);
   return (
     <div
       className="modal1"
@@ -24,6 +25,15 @@ export default function Dialog(props) {
         >
           <b>X</b>
         </button>
+        <p>
+          <button
+            key="4"
+            style={{ cursor: 'pointer' }}
+            onClick={props.toggleHandler}
+          >
+            Open Dialog Without Freeze{' '}
+          </button>
+        </p>
       </div>
 
       <br />
