@@ -126,10 +126,15 @@ export default class Modal extends React.Component {
     console.log(floatingDialogContinerClassName);
 
     let indexOfContainerElement =
-      Modal.newFloatingUIContainerElementList.findIndex(
-        Modal.findIndexOfContainerElement,
-        floatingDialogContinerClassName
-      );
+      Modal.newFloatingUIContainerElementList.findIndex(function (
+        element,
+        index
+      ) {
+        retuModal.findIndexOfContainerElement(
+          element,
+          floatingDialogContinerClassName
+        );
+      });
 
     console.log(
       'indexOfContainerElement',
