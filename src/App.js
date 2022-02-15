@@ -21,7 +21,6 @@ export default class App extends React.Component {
     this.pageRef = React.createRef();
   }
 
-  
   handleTopModal() {
     console.log('Inside >>>>>>>>>>>>>>>');
     let toggleState = !this.state.showTopModal;
@@ -49,7 +48,6 @@ export default class App extends React.Component {
         reference={this.elementRef}
         pageref={this.pageRef}
         overlayref={this.overlayRef}
-
         closeDialog={() => {
           this.handleHide();
         }}
@@ -154,6 +152,7 @@ export default class App extends React.Component {
           {modal}
           {this.state.showTopModal ? (
             <TopModal
+              overlayref={this.overlayRef}
               closeDialog={() => {
                 this.handleTopModal();
               }}

@@ -23,11 +23,13 @@ export default class TopModal extends React.Component {
     this.setState({ showModalWithoutOverlay: toggleState });
   }
   render() {
+    console.log(this.props);
     return (
       <div>
         <Modal
           modalrootreference={document.getElementById('modal-root1')}
           reference={this.elementRef}
+          overlayref={this.props.overlayref}
           closeDialog={() => {
             this.props.closeDialog();
           }}

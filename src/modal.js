@@ -21,6 +21,7 @@ export default class Modal extends React.Component {
   static isKeyDownEventListenerConfigured = false;
   static isEscapeKeyPressed = false;
   componentDidMount() {
+    console.log('from modal.js', this.props);
     // Append the element into the DOM on mount. We'll render
     // into the modal container element (see the HTML tab).
     console.log(this.props.modalrootreference);
@@ -61,13 +62,18 @@ export default class Modal extends React.Component {
   }
 
   applyZIndexToFloatingContainerElement(modalObj) {
-    let count = Modal.floatingUIContainerElementList.length;
-    let styleObj = { zIndex: Modal.defaultZIndex + +count };
+    let styleObj = { zIndex: Modal.defaultZIndex };
+    if (typeof this.props.overlayref !== 'undefined') {
+      let count = Modal.floatingUIContainerElementList.length;
+      styleObj = { zIndex: Modal.defaultZIndex + +count };
+    }
     Object.assign(modalObj.style, styleObj);
   }
 
   persistZIndexValue(elemObj) {
-    Modal.defaultZIndex = elemObj.style.zIndex;
+    if (typeof this.props.overlayref !== 'undefined') {
+      Modal.defaultZIndex = elemObj.style.zIndex;
+    }
   }
 
   persistFloatingDialogElementReference() {
@@ -152,7 +158,9 @@ export default class Modal extends React.Component {
   }
 
   applyZIndexToOverlayEement() {
-    Modal.overlayReference.style.zIndex = Modal.defaultZIndex;
+    if (typeof this.props.overlayref !== 'undefined') {
+      Modal.overlayReference.style.zIndex = Modal.defaultZIndex;
+    }
   }
 
   persistOverlayElementReference() {
