@@ -21,12 +21,21 @@ export default class TopModal extends React.Component {
   handleModalWithoutOverlay() {
     let toggleState = !this.state.showModalWithoutOverlay;
     console.log('Inside handleModalWithoutOverlay CBF');
-    this.setState({ showModalWithoutOverlay: toggleState });
-    this.callAutoCloseFn();
+    // this.setState({ showModalWithoutOverlay: toggleState });
+    this.setState(
+      function (state, props) {
+        return {
+          showModalWithoutOverlay: toggleState,
+        };
+      },
+      () => {
+        // this.callAutoCloseFn();
+      }
+    );
   }
   callAutoCloseFn() {
     if (this.state.showModalWithoutOverlay) {
-      console.log('inside callAutoCloseFn',);
+      console.log('inside callAutoCloseFn');
       let that = this;
       setTimeout(function () {
         that.setState({ showModalWithoutOverlay: false });
