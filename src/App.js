@@ -44,6 +44,7 @@ export default class App extends React.Component {
     // for accessibility!)
     const modal = this.state.showModal ? (
       <Modal
+        modalrootreference={document.getElementById('modal-root')}
         reference={this.elementRef}
         pageref={this.pageRef}
         overlayref={this.overlayRef}

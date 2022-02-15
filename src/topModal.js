@@ -16,17 +16,20 @@ export default class TopModal extends React.Component {
 
   render() {
     return (
-      <Modal
-        reference={this.elementRef}
-        closeDialog={() => {
-          this.props.closeDialog();
-        }}
-      >
-        <Dialog
-          elementRef={this.elementRef}
-          closeDialog={this.props.closeDialog}
-        ></Dialog>
-      </Modal>
+      <div>
+        <Modal
+          modalrootreference={document.getElementById('modal-root1')}
+          reference={this.elementRef}
+          closeDialog={() => {
+            this.props.closeDialog();
+          }}
+        >
+          <Dialog
+            elementRef={this.elementRef}
+            closeDialog={this.props.closeDialog}
+          ></Dialog>
+        </Modal>
+      </div>
     );
   }
 }

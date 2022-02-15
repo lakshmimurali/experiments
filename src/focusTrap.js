@@ -1,7 +1,7 @@
 export default function focusTrap(e, containerElement) {
   // only execute if tab is pressed
   if (e.key !== 'Tab') return;
-  console.log(containerElement);
+  //console.log(containerElement);
   // here we query all focusable elements, customize as your own need
   const focusableModalElements = containerElement.querySelectorAll(
     'a[href], button:not([disabled]), textarea, input, select'

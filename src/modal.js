@@ -12,6 +12,7 @@ export default class Modal extends React.Component {
     // modal components into the modal container.
     this.el = document.createElement('div');
   }
+  static modalRootReferenceList = [];
   static floatingUIContainerElementList = [];
   static dialogElementReferencesList = [];
   static overlayReference;
@@ -22,8 +23,12 @@ export default class Modal extends React.Component {
   componentDidMount() {
     // Append the element into the DOM on mount. We'll render
     // into the modal container element (see the HTML tab).
-    modalRoot.appendChild(this.el);
-    this.persistFloatingUIContainerElement();
+    console.log(this.props.modalrootreference);
+    this.props.modalrootreference.appendChild(this.el);
+
+    this.persistFloatingUIContainerElementWithModalRoot(
+      this.props.modalrootreference
+    );
     this.applyStyleToFloatingUIContainerElement(this.el, {
       position: 'relative',
       backgroundColor: '#ffffff',
@@ -43,8 +48,12 @@ export default class Modal extends React.Component {
 
     this.bindKeyDownEventToDocument();
   }
-  persistFloatingUIContainerElement() {
-    Modal.floatingUIContainerElementList.push(this.el);
+
+  persistFloatingUIContainerElementWithModalRoot(modalRootElem) {
+    Modal.floatingUIContainerElementList.push({
+      modalroot: this.props.modalrootreference,
+      floatinguicontainerelement: this.el,
+    });
   }
 
   applyStyleToFloatingUIContainerElement(modalObj, styleObj) {
@@ -101,7 +110,13 @@ export default class Modal extends React.Component {
     }
   }
   static removeTopMostFloatingUIContainerElement() {
-    let topMostFloatingContainer = Modal.floatingUIContainerElementList.pop();
+    let topMostFloatingContainerObj =
+      Modal.floatingUIContainerElementList.pop();
+
+    let topMostFloatingContainer =
+      topMostFloatingContainerObj.floatinguicontainerelement;
+
+    let modalRoot = topMostFloatingContainerObj.modalroot;
     modalRoot.removeChild(topMostFloatingContainer);
   }
 
@@ -111,7 +126,11 @@ export default class Modal extends React.Component {
   static getTopMostFloatingUIContainerElement() {
     let lengthOfUIContainerElement =
       Modal.floatingUIContainerElementList.length;
-    return Modal.floatingUIContainerElementList[lengthOfUIContainerElement - 1];
+    console.log(
+      Modal.floatingUIContainerElementList[lengthOfUIContainerElement - 1]
+    );
+    return Modal.floatingUIContainerElementList[lengthOfUIContainerElement - 1]
+      .floatinguicontainerelement;
   }
 
   static removeTopMostFloatingDialogElement() {
