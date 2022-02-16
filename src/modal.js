@@ -119,11 +119,11 @@ export default class Modal extends React.Component {
       );
       Modal.isEscapeKeyPressed = true;
 
-      Modal.removeFloatingUIContainerElement(
+      Modal.invokeCloseCallBackFunctionOfDialogElement(
         indexOfContainerElement,
         floatingDialogContinerClassName
       );
-      Modal.invokeCloseCallBackFunctionOfDialogElement(
+      Modal.removeFloatingUIContainerElement(
         indexOfContainerElement,
         floatingDialogContinerClassName
       );
