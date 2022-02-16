@@ -106,7 +106,10 @@ export default class Modal extends React.Component {
       Modal.dialogElementReferencesList[lengthofDialogElements - 1];
     return topDialogElementReference;
   }
-
+  getDialogElementReference(index, refClass) {
+    return Modal.newFloatingUIContainerElementList[index][refClass]
+      .dialogElemRef;
+  }
   bindKeyDownEventToDocument() {
     if (!this.checkStatusOfKeyDownEventBoundToDocument()) {
       document.addEventListener('keydown', this.handleKeyPressEvent, false);
@@ -134,6 +137,14 @@ export default class Modal extends React.Component {
     if (event.key === 'Escape') {
       Modal.isEscapeKeyPressed = true;
       Modal.removeTopMostFloatingUIContainerElement();
+      /* Modal.removeFloatingUIContainerElement(
+        indexOfContainerElement,
+        floatingDialogContinerClassName
+      );*/
+      /*Modal.invokeCloseCallBackFunctionOfDialogElement(
+        indexOfContainerElement,
+        floatingDialogContinerClassName
+      );*/
       Modal.invokeCloseCallBackFunctionOfTopMostDialogElement();
     } else if (event.key === 'Tab') {
       focusTrap(event, Modal.getTopMostFloatingUIContainerElement());
@@ -162,22 +173,45 @@ export default class Modal extends React.Component {
     let modalRoot = topMostFloatingContainerObj.modalroot;
     modalRoot.removeChild(topMostFloatingContainer);
   }
+  static removeFloatingUIContainerElement(index, refClass) {
+    let floatingContainerObj =
+      Modal.newFloatingUIContainerElementList[index][refClass];
 
+    let floatingContainerElem = floatingContainerObj.floatinguicontainerelement;
+
+    let modalRoot = floatingContainerObj.modalroot;
+    modalRoot.removeChild(floatingContainerElem);
+  }
   static invokeCloseCallBackFunctionOfTopMostDialogElement() {
     Modal.removeTopMostFloatingDialogElement().functionReferenceToClose();
   }
+  static invokeCloseCallBackFunctionOfDialogElement(
+    indexOfDialogElement,
+    refClass
+  ) {
+    Modal.newFloatingUIContainerElementList[indexOfDialogElement][refClass]
+      .functionReferenceToClose;
+    //  Modal.removeTopMostFloatingDialogElement().functionReferenceToClose();
+  }
+
   static getTopMostFloatingUIContainerElement() {
     let lengthOfUIContainerElement =
       Modal.floatingUIContainerElementList.length;
     return Modal.floatingUIContainerElementList[lengthOfUIContainerElement - 1]
       .floatinguicontainerelement;
   }
-
+  static getFloatingUIContainerElement(index, refClass) {
+    return Modal.newFloatingUIContainerElementList[index][refClass]
+      .floatinguicontainerelement;
+  }
   static removeTopMostFloatingDialogElement() {
     let topMostFloatingUIElem = Modal.dialogElementReferencesList.pop();
     return topMostFloatingUIElem;
   }
-
+  static removeTopMostFloatingDialogElement() {
+    let topMostFloatingUIElem = Modal.dialogElementReferencesList.pop();
+    return topMostFloatingUIElem;
+  }
   resetDefaultZIndex() {
     Modal.defaultZIndex = 0;
   }
