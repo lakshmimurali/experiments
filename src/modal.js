@@ -31,9 +31,9 @@ export default class Modal extends React.Component {
     this.props.modalrootreference.appendChild(this.el);
 
     this.mapFloatingContainerWithDIalogElement();
-    this.persistFloatingUIContainerElementWithModalRoot(
+    /*this.persistFloatingUIContainerElementWithModalRoot(
       this.props.modalrootreference
-    );
+    );*/
     this.applyStyleToFloatingUIContainerElement(this.el, {
       position: 'relative',
       backgroundColor: '#ffffff',
@@ -43,7 +43,7 @@ export default class Modal extends React.Component {
     this.persistZIndexValue(this.el);
 
     this.persistFloatingDialogElementReference();
-    this.applyFocusToFloatingDialogElement();
+    this.applyFocusToFloatingDialogElement(this.el.className);
 
     this.persistOverlayElementReference();
     this.showOverlayElement();
@@ -96,8 +96,16 @@ export default class Modal extends React.Component {
     });
   }
 
-  applyFocusToFloatingDialogElement() {
-    this.getTopMostDialogElementReference().dialogElemRef.focus();
+  applyFocusToFloatingDialogElement(refClass) {
+    let indexOfContainerElement = Modal.getIndexOfContainerElement(
+      Modal.newFloatingUIContainerElementList,
+      refClass
+    );
+    let floatingContainerObj =
+      Modal.newFloatingUIContainerElementList[indexOfContainerElement][
+        refClass
+      ];
+    floatingContainerObj.dialogElemRef.focus();
   }
 
   getTopMostDialogElementReference() {
@@ -174,13 +182,20 @@ export default class Modal extends React.Component {
     modalRoot.removeChild(topMostFloatingContainer);
   }
   static removeFloatingUIContainerElement(index, refClass) {
-    let floatingContainerObj =
-      Modal.newFloatingUIContainerElementList[index][refClass];
+    if (
+      Object.keys(Modal.newFloatingUIContainerElementList[index])[0] ===
+      refClass
+    ) {
+      let floatingContainerObj =
+        Modal.newFloatingUIContainerElementList[index][refClass];
 
-    let floatingContainerElem = floatingContainerObj.floatinguicontainerelement;
+      let floatingContainerElem =
+        floatingContainerObj.floatinguicontainerelement;
 
-    let modalRoot = floatingContainerObj.modalroot;
-    modalRoot.removeChild(floatingContainerElem);
+      let modalRoot = floatingContainerObj.modalroot;
+      modalRoot.removeChild(floatingContainerElem);
+      Modal.newFloatingUIContainerElementList.splice(index, 1);
+    }
   }
   static invokeCloseCallBackFunctionOfTopMostDialogElement() {
     Modal.removeTopMostFloatingDialogElement().functionReferenceToClose();
@@ -208,10 +223,7 @@ export default class Modal extends React.Component {
     let topMostFloatingUIElem = Modal.dialogElementReferencesList.pop();
     return topMostFloatingUIElem;
   }
-  static removeTopMostFloatingDialogElement() {
-    let topMostFloatingUIElem = Modal.dialogElementReferencesList.pop();
-    return topMostFloatingUIElem;
-  }
+
   resetDefaultZIndex() {
     Modal.defaultZIndex = 0;
   }
@@ -275,7 +287,7 @@ export default class Modal extends React.Component {
     );
     // Remove the element from the DOM when we unmount
     if (!Modal.isEscapeKeyPressed) {
-      Modal.removeTopMostFloatingDialogElement();
+      //Modal.removeTopMostFloatingDialogElement();
       Modal.removeTopMostFloatingUIContainerElement();
     }
 
