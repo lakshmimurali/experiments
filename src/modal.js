@@ -24,10 +24,10 @@ export default class Modal extends React.Component {
   static isKeyDownEventListenerConfigured = false;
   static isEscapeKeyPressed = false;
   componentDidMount() {
-    console.log('from modal.js', this.props);
+    //console.log('from modal.js', this.props);
     // Append the element into the DOM on mount. We'll render
     // into the modal container element (see the HTML tab).
-    console.log(this.props.modalrootreference);
+    //console.log(this.props.modalrootreference);
     this.props.modalrootreference.appendChild(this.el);
 
     this.mapFloatingContainerWithDIalogElement();
@@ -112,32 +112,42 @@ export default class Modal extends React.Component {
       let indexOfContainerElement = Modal.getIndexOfContainerElement(
         floatingDialogContinerClassName
       );
-      console.log(
-        'indexOfContainerElement',
-        indexOfContainerElement,
-        Modal.newFloatingUIContainerElementList[indexOfContainerElement]
-      );
-      Modal.isEscapeKeyPressed = true;
+      if (floatingDialogContinerClassName !== undefined) {
+        Modal.isEscapeKeyPressed = true;
 
-      Modal.invokeCloseCallBackFunctionOfDialogElement(
-        indexOfContainerElement,
-        floatingDialogContinerClassName
-      );
-      Modal.removeFloatingUIContainerElement(
-        indexOfContainerElement,
-        floatingDialogContinerClassName
-      );
+        Modal.invokeCloseCallBackFunctionOfDialogElement(
+          indexOfContainerElement,
+          floatingDialogContinerClassName
+        );
+        Modal.removeFloatingUIContainerElement(
+          indexOfContainerElement,
+          floatingDialogContinerClassName
+        );
+      }
     } else if (event.key === 'Tab') {
-      focusTrap(
-        event,
-        Modal.getTopMostFloatingUIContainerElement(
-          Modal.getClassNameOfClosestContainerElement(event.target)
-        )
-      );
+      let floatingDialogContinerClassName =
+        Modal.getClassNameOfClosestContainerElement(event.target);
+      if (floatingDialogContinerClassName !== undefined) {
+        let indexOfContainerElement = Modal.getIndexOfContainerElement(
+          floatingDialogContinerClassName
+        );
+        focusTrap(
+          event,
+          Modal.newFloatingUIContainerElementList[indexOfContainerElement][
+            floatingDialogContinerClassName
+          ].floatinguicontainerelement
+        );
+      }
     }
   }
   static getClassNameOfClosestContainerElement(elemObj) {
-    return elemObj.closest('div[class^=floatingcontainer_]').className;
+    console.log(
+      elemObj.closest('div[class^=floatingcontainer_]'),
+      typeof elemObj.closest('div[class^=floatingcontainer_]')
+    );
+    if (elemObj.closest('div[class^=floatingcontainer_]') !== null) {
+      return elemObj.closest('div[class^=floatingcontainer_]').className;
+    }
   }
 
   static getIndexOfContainerElement(valueToMatch) {
@@ -148,7 +158,6 @@ export default class Modal extends React.Component {
     });
   }
   static findIndexOfContainerElement(element, floatingDialogContinerClassName) {
-    console.log(Object.keys(element)[0], floatingDialogContinerClassName);
     return Object.keys(element)[0] == floatingDialogContinerClassName;
   }
   static removeTopMostFloatingUIContainerElement() {
@@ -162,6 +171,7 @@ export default class Modal extends React.Component {
     modalRoot.removeChild(topMostFloatingContainer);
   }
   static removeFloatingUIContainerElement(index, refClass) {
+    console.log(index, refClass);
     if (
       Object.keys(Modal.newFloatingUIContainerElementList[index])[0] ===
       refClass
@@ -203,10 +213,6 @@ export default class Modal extends React.Component {
   static getFloatingUIContainerElement(index, refClass) {
     return Modal.newFloatingUIContainerElementList[index][refClass]
       .floatinguicontainerelement;
-  }
-  static removeTopMostFloatingDialogElement() {
-    let topMostFloatingUIElem = Modal.dialogElementReferencesList.pop();
-    return topMostFloatingUIElem;
   }
 
   resetDefaultZIndex() {
@@ -282,6 +288,7 @@ export default class Modal extends React.Component {
     } else {
       this.resetModalBoxValues();
     }
+    console.log(Modal.newFloatingUIContainerElementList);
     Modal.isEscapeKeyPressed = false;
   }
 

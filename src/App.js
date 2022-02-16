@@ -1,6 +1,7 @@
 import React from 'react';
 import Modal from './modal.js';
 import TopModal from './topModal.js';
+import TopMostModal from './topmostmodal.js';
 import './style.css';
 
 // The Modal component is a normal React component, so we can
@@ -10,17 +11,37 @@ import './style.css';
 export default class App extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { showModal: false, textValue: '', showTopModal: false };
+    this.state = {
+      showModal: false,
+      textValue: '',
+      showTopModal: false,
+      showModalWithoutOverlay: false,
+    };
 
     this.handleShow = this.handleShow.bind(this);
     this.handleTopModal = this.handleTopModal.bind(this);
     this.handleHide = this.handleHide.bind(this);
     this.changeHandler = this.changeHandler.bind(this);
+    this.handleModalWithoutOverlay = this.handleModalWithoutOverlay.bind(this);
     this.elementRef = React.createRef();
     this.overlayRef = React.createRef();
     this.pageRef = React.createRef();
   }
-
+  handleModalWithoutOverlay() {
+    let toggleState = !this.state.showModalWithoutOverlay;
+    console.log('Inside handleModalWithoutOverlay CBF');
+    // this.setState({ showModalWithoutOverlay: toggleState });
+    this.setState(
+      function (state, props) {
+        return {
+          showModalWithoutOverlay: toggleState,
+        };
+      },
+      () => {
+        // this.callAutoCloseFn();
+      }
+    );
+  }
   handleTopModal() {
     console.log('Inside >>>>>>>>>>>>>>>');
     let toggleState = !this.state.showTopModal;
@@ -153,8 +174,17 @@ export default class App extends React.Component {
           {this.state.showTopModal ? (
             <TopModal
               overlayref={this.overlayRef}
+              toggleHandler={this.handleModalWithoutOverlay}
               closeDialog={() => {
                 this.handleTopModal();
+              }}
+            />
+          ) : null}
+          {this.state.showModalWithoutOverlay ? (
+            <TopMostModal
+              overlayref={this.overlayRef}
+              closeDialog={() => {
+                this.handleModalWithoutOverlay();
               }}
             />
           ) : null}
