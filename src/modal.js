@@ -94,7 +94,7 @@ export default class Modal extends React.Component {
   }
   bindKeyDownEventToDocument() {
     if (!this.checkStatusOfKeyDownEventBoundToDocument()) {
-      document.addEventListener('keydown', this.handleKeyPressEvent, false);
+      document.addEventListener('keydown', Modal.handleKeyPressEvent, false);
       this.setKeyDownEventBoundToDocumentStatusToTrue();
     }
   }
@@ -104,7 +104,7 @@ export default class Modal extends React.Component {
   setKeyDownEventBoundToDocumentStatusToTrue() {
     Modal.isKeyDownEventListenerConfigured = true;
   }
-  handleKeyPressEvent(event) {
+  static handleKeyPressEvent(event) {
     if (event.key === 'Escape') {
       let floatingDialogContinerClassName =
         Modal.getClassNameOfClosestContainerElement(event.target);
@@ -192,18 +192,23 @@ export default class Modal extends React.Component {
         floatingContainerObj.floatinguicontainerelement;
 
       let isOverlayApplied = floatingContainerElem.isOverlayNeeded;
+
+      let modalRoot = floatingContainerObj.modalroot;
+      modalRoot.removeChild(floatingContainerElem);
+      Modal.newFloatingUIContainerElementList.splice(index, 1);
       if (
         isOverlayApplied &&
         Modal.newFloatingUIContainerElementList.length > 0
       ) {
-        let topEement = Modal.getContainerElement(
+        let topElement = Modal.getContainerElement(
           Modal.newFloatingUIContainerElementList.length - 1
         );
-        topEement.floatinguicontainerelement.style.zIndex = +Modal.defaultZIndex;
+        topElement.floatinguicontainerelement.style.zIndex =
+          +Modal.defaultZIndex;
       }
-      let modalRoot = floatingContainerObj.modalroot;
-      modalRoot.removeChild(floatingContainerElem);
-      Modal.newFloatingUIContainerElementList.splice(index, 1);
+      if (Modal.newFloatingUIContainerElementList.length === 0) {
+        Modal.resetModalBoxValues();
+      }
     }
   }
 
@@ -235,7 +240,7 @@ export default class Modal extends React.Component {
       .floatinguicontainerelement;
   }
 
-  resetDefaultZIndex() {
+  static resetDefaultZIndex() {
     Modal.defaultZIndex = 0;
   }
 
@@ -244,10 +249,10 @@ export default class Modal extends React.Component {
       Modal.pageElementReference = this.props.pageref;
     }
   }
-  applyFocusToPageElementReference() {
+  static applyFocusToPageElementReference() {
     Modal.pageElementReference.current.focus();
   }
-  resetPageElementReference() {
+  static resetPageElementReference() {
     Modal.pageElementReference = null;
   }
 
@@ -267,27 +272,28 @@ export default class Modal extends React.Component {
       Modal.overlayReference.style.display = 'block';
     }
   }
-  applyStyleToOverlayElement(styleObj) {
+  static applyStyleToOverlayElement(styleObj) {
     Object.assign(Modal.overlayReference.style, styleObj);
   }
-  resetOverlayReference() {
+  static resetOverlayReference() {
     Modal.overlayReference = null;
   }
-  resetisEventListenerAddedProperty() {
+  static resetisEventListenerAddedProperty() {
     Modal.isKeyDownEventListenerConfigured = false;
   }
-  unbindKeyDownEventListener() {
-    document.removeEventListener('keydown', this.handleKeyPressEvent);
+  static unbindKeyDownEventListener() {
+    document.removeEventListener('keydown', Modal.handleKeyPressEvent);
   }
-  resetModalBoxValues() {
+  static resetModalBoxValues() {
     //Restore Focus
-    this.applyFocusToPageElementReference();
+    Modal.applyFocusToPageElementReference();
 
-    this.resetPageElementReference();
-    this.resetDefaultZIndex();
-    this.applyStyleToOverlayElement({ display: 'none', zIndex: '' });
-    this.unbindKeyDownEventListener();
-    this.resetisEventListenerAddedProperty();
+    Modal.resetPageElementReference();
+    Modal.resetDefaultZIndex();
+    Modal.applyStyleToOverlayElement({ display: 'none', zIndex: '' });
+    Modal.resetOverlayReference();
+    Modal.resetisEventListenerAddedProperty();
+    Modal.unbindKeyDownEventListener();
   }
   componentWillUnmount() {
     // Remove the element from the DOM when we unmount
