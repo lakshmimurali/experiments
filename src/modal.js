@@ -31,9 +31,7 @@ export default class Modal extends React.Component {
     this.props.modalrootreference.appendChild(this.el);
 
     this.mapFloatingContainerWithDIalogElement();
-    /*this.persistFloatingUIContainerElementWithModalRoot(
-      this.props.modalrootreference
-    );*/
+
     this.applyStyleToFloatingUIContainerElement(this.el, {
       position: 'relative',
       backgroundColor: '#ffffff',
@@ -42,7 +40,6 @@ export default class Modal extends React.Component {
 
     this.persistZIndexValue(this.el);
 
-    this.persistFloatingDialogElementReference();
     this.applyFocusToFloatingDialogElement(this.el.className);
 
     this.persistOverlayElementReference();
@@ -61,12 +58,6 @@ export default class Modal extends React.Component {
         dialogElemRef: this.props.reference.current,
         functionReferenceToClose: this.props.closeDialog,
       },
-    });
-  }
-  persistFloatingUIContainerElementWithModalRoot(modalRootElem) {
-    Modal.floatingUIContainerElementList.push({
-      modalroot: this.props.modalrootreference,
-      floatinguicontainerelement: this.el,
     });
   }
 
@@ -89,18 +80,8 @@ export default class Modal extends React.Component {
     }
   }
 
-  persistFloatingDialogElementReference() {
-    Modal.dialogElementReferencesList.push({
-      dialogElemRef: this.props.reference.current,
-      functionReferenceToClose: this.props.closeDialog,
-    });
-  }
-
   applyFocusToFloatingDialogElement(refClass) {
-    let indexOfContainerElement = Modal.getIndexOfContainerElement(
-      Modal.newFloatingUIContainerElementList,
-      refClass
-    );
+    let indexOfContainerElement = Modal.getIndexOfContainerElement(refClass);
     let floatingContainerObj =
       Modal.newFloatingUIContainerElementList[indexOfContainerElement][
         refClass
@@ -108,12 +89,6 @@ export default class Modal extends React.Component {
     floatingContainerObj.dialogElemRef.focus();
   }
 
-  getTopMostDialogElementReference() {
-    let lengthofDialogElements = Modal.dialogElementReferencesList.length;
-    let topDialogElementReference =
-      Modal.dialogElementReferencesList[lengthofDialogElements - 1];
-    return topDialogElementReference;
-  }
   getDialogElementReference(index, refClass) {
     return Modal.newFloatingUIContainerElementList[index][refClass]
       .dialogElemRef;
@@ -134,7 +109,6 @@ export default class Modal extends React.Component {
     let floatingDialogContinerClassName =
       Modal.getClassNameOfClosestContainerElement(event.target);
     let indexOfContainerElement = Modal.getIndexOfContainerElement(
-      Modal.newFloatingUIContainerElementList,
       floatingDialogContinerClassName
     );
     console.log(
@@ -144,26 +118,32 @@ export default class Modal extends React.Component {
     );
     if (event.key === 'Escape') {
       Modal.isEscapeKeyPressed = true;
-      Modal.removeTopMostFloatingUIContainerElement();
-      /* Modal.removeFloatingUIContainerElement(
+
+      Modal.removeFloatingUIContainerElement(
         indexOfContainerElement,
         floatingDialogContinerClassName
-      );*/
-      /*Modal.invokeCloseCallBackFunctionOfDialogElement(
+      );
+      Modal.invokeCloseCallBackFunctionOfDialogElement(
         indexOfContainerElement,
         floatingDialogContinerClassName
-      );*/
-      Modal.invokeCloseCallBackFunctionOfTopMostDialogElement();
+      );
     } else if (event.key === 'Tab') {
-      focusTrap(event, Modal.getTopMostFloatingUIContainerElement());
+      focusTrap(
+        event,
+        Modal.getTopMostFloatingUIContainerElement(
+          floatingDialogContinerClassName
+        )
+      );
     }
   }
   static getClassNameOfClosestContainerElement(elemObj) {
     return elemObj.closest('div[class^=floatingcontainer_]').className;
   }
 
-  static getIndexOfContainerElement(list, valueToMatch) {
-    return list.findIndex(function (element) {
+  static getIndexOfContainerElement(valueToMatch) {
+    return Modal.newFloatingUIContainerElementList.findIndex(function (
+      element
+    ) {
       return Modal.findIndexOfContainerElement(element, valueToMatch);
     });
   }
@@ -209,11 +189,12 @@ export default class Modal extends React.Component {
     //  Modal.removeTopMostFloatingDialogElement().functionReferenceToClose();
   }
 
-  static getTopMostFloatingUIContainerElement() {
+  static getTopMostFloatingUIContainerElement(refClass) {
     let lengthOfUIContainerElement =
       Modal.floatingUIContainerElementList.length;
-    return Modal.floatingUIContainerElementList[lengthOfUIContainerElement - 1]
-      .floatinguicontainerelement;
+    return Modal.newFloatingUIContainerElementList[
+      lengthOfUIContainerElement - 1
+    ][refClass].floatinguicontainerelement;
   }
   static getFloatingUIContainerElement(index, refClass) {
     return Modal.newFloatingUIContainerElementList[index][refClass]
@@ -287,12 +268,16 @@ export default class Modal extends React.Component {
     );
     // Remove the element from the DOM when we unmount
     if (!Modal.isEscapeKeyPressed) {
-      //Modal.removeTopMostFloatingDialogElement();
-      Modal.removeTopMostFloatingUIContainerElement();
+      Modal.removeFloatingUIContainerElement(
+        Modal.getIndexOfContainerElement(this.el.className),
+        this.el.className
+      );
     }
 
     if (typeof this.getTopMostDialogElementReference() !== 'undefined') {
-      this.applyFocusToFloatingDialogElement();
+      this.applyFocusToFloatingDialogElement(
+        Modal.getTopMostFloatingUIContainerElement()
+      );
       this.applyZIndexToFloatingContainerElement(
         Modal.getTopMostFloatingUIContainerElement()
       );
