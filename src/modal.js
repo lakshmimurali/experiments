@@ -106,17 +106,17 @@ export default class Modal extends React.Component {
     Modal.isKeyDownEventListenerConfigured = true;
   }
   handleKeyPressEvent(event) {
-    let floatingDialogContinerClassName =
-      Modal.getClassNameOfClosestContainerElement(event.target);
-    let indexOfContainerElement = Modal.getIndexOfContainerElement(
-      floatingDialogContinerClassName
-    );
-    console.log(
-      'indexOfContainerElement',
-      indexOfContainerElement,
-      Modal.newFloatingUIContainerElementList[indexOfContainerElement]
-    );
     if (event.key === 'Escape') {
+      let floatingDialogContinerClassName =
+        Modal.getClassNameOfClosestContainerElement(event.target);
+      let indexOfContainerElement = Modal.getIndexOfContainerElement(
+        floatingDialogContinerClassName
+      );
+      console.log(
+        'indexOfContainerElement',
+        indexOfContainerElement,
+        Modal.newFloatingUIContainerElementList[indexOfContainerElement]
+      );
       Modal.isEscapeKeyPressed = true;
 
       Modal.removeFloatingUIContainerElement(
@@ -131,7 +131,7 @@ export default class Modal extends React.Component {
       focusTrap(
         event,
         Modal.getTopMostFloatingUIContainerElement(
-          floatingDialogContinerClassName
+          Modal.getClassNameOfClosestContainerElement(event.target)
         )
       );
     }
@@ -177,15 +177,19 @@ export default class Modal extends React.Component {
       Modal.newFloatingUIContainerElementList.splice(index, 1);
     }
   }
-  static invokeCloseCallBackFunctionOfTopMostDialogElement() {
-    Modal.removeTopMostFloatingDialogElement().functionReferenceToClose();
-  }
+
   static invokeCloseCallBackFunctionOfDialogElement(
     indexOfDialogElement,
     refClass
   ) {
-    Modal.newFloatingUIContainerElementList[indexOfDialogElement][refClass]
-      .functionReferenceToClose;
+    console.log(
+      indexOfDialogElement,
+      refClass,
+      Modal.newFloatingUIContainerElementList[indexOfDialogElement][refClass]
+    );
+    Modal.newFloatingUIContainerElementList[indexOfDialogElement][
+      refClass
+    ].functionReferenceToClose();
     //  Modal.removeTopMostFloatingDialogElement().functionReferenceToClose();
   }
 
@@ -260,12 +264,6 @@ export default class Modal extends React.Component {
     this.resetisEventListenerAddedProperty();
   }
   componentWillUnmount() {
-    console.log('Inside componentWIllUnount Call', this.el, this);
-    console.log(
-      'Related References',
-      Modal.newFloatingUIContainerElementList[this.el],
-      Modal.newFloatingUIContainerElementList
-    );
     // Remove the element from the DOM when we unmount
     if (!Modal.isEscapeKeyPressed) {
       Modal.removeFloatingUIContainerElement(
@@ -274,7 +272,7 @@ export default class Modal extends React.Component {
       );
     }
 
-    if (typeof Modal.getTopMostFloatingUIContainerElement() !== 'undefined') {
+    if (Modal.newFloatingUIContainerElementList.length > 0) {
       /*this.applyFocusToFloatingDialogElement(
         Modal.getTopMostFloatingUIContainerElement()
       );*/
