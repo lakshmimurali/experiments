@@ -67,8 +67,9 @@ export default class Modal extends React.Component {
 
   applyZIndexToFloatingContainerElement(modalObj) {
     let styleObj = { zIndex: Modal.defaultZIndex };
+    console.log(this.props.overlayref);
     if (typeof this.props.overlayref !== 'undefined') {
-      let count = Modal.floatingUIContainerElementList.length;
+      let count = Modal.newFloatingUIContainerElementList.length;
       styleObj = { zIndex: Modal.defaultZIndex + +count };
     }
     Object.assign(modalObj.style, styleObj);
