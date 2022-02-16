@@ -120,22 +120,12 @@ export default class Modal extends React.Component {
     Modal.isKeyDownEventListenerConfigured = true;
   }
   handleKeyPressEvent(event) {
-    let floatingDialogContinerClassName = event.target.closest(
-      'div[class^=floatingcontainer_]'
-    ).className;
-    console.log(floatingDialogContinerClassName);
-
-    let indexOfContainerElement =
-      Modal.newFloatingUIContainerElementList.findIndex(function (
-        element,
-        index
-      ) {
-        retuModal.findIndexOfContainerElement(
-          element,
-          floatingDialogContinerClassName
-        );
-      });
-
+    let floatingDialogContinerClassName =
+      Modal.getClassNameOfClosestContainerElement(event.target);
+    let indexOfContainerElement = Modal.getIndexOfContainerElement(
+      Modal.newFloatingUIContainerElementList,
+      floatingDialogContinerClassName
+    );
     console.log(
       'indexOfContainerElement',
       indexOfContainerElement,
@@ -148,6 +138,15 @@ export default class Modal extends React.Component {
     } else if (event.key === 'Tab') {
       focusTrap(event, Modal.getTopMostFloatingUIContainerElement());
     }
+  }
+  static getClassNameOfClosestContainerElement(elemObj) {
+    return elemObj.closest('div[class^=floatingcontainer_]').className;
+  }
+
+  static getIndexOfContainerElement(list, valueToMatch) {
+    return list.findIndex(function (element) {
+      return Modal.findIndexOfContainerElement(element, valueToMatch);
+    });
   }
   static findIndexOfContainerElement(element, floatingDialogContinerClassName) {
     console.log(Object.keys(element)[0], floatingDialogContinerClassName);
