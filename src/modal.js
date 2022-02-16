@@ -191,7 +191,7 @@ export default class Modal extends React.Component {
 
   static getTopMostFloatingUIContainerElement(refClass) {
     let lengthOfUIContainerElement =
-      Modal.floatingUIContainerElementList.length;
+      Modal.newFloatingUIContainerElementList.length;
     return Modal.newFloatingUIContainerElementList[
       lengthOfUIContainerElement - 1
     ][refClass].floatinguicontainerelement;
@@ -274,13 +274,13 @@ export default class Modal extends React.Component {
       );
     }
 
-    if (typeof this.getTopMostDialogElementReference() !== 'undefined') {
-      this.applyFocusToFloatingDialogElement(
+    if (typeof Modal.getTopMostFloatingUIContainerElement() !== 'undefined') {
+      /*this.applyFocusToFloatingDialogElement(
         Modal.getTopMostFloatingUIContainerElement()
-      );
-      this.applyZIndexToFloatingContainerElement(
+      );*/
+      /*this.applyZIndexToFloatingContainerElement(
         Modal.getTopMostFloatingUIContainerElement()
-      );
+      );*/
     } else {
       this.resetModalBoxValues();
     }
