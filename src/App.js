@@ -68,7 +68,6 @@ export default class App extends React.Component {
         modalrootreference={document.getElementById('modal-root')}
         reference={this.elementRef}
         pageref={this.pageRef}
-        overlayref={this.overlayRef}
         closeDialog={() => {
           this.handleHide();
         }}
