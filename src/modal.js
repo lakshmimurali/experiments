@@ -65,7 +65,7 @@ export default class Modal extends React.Component {
 
   applyZIndexToFloatingContainerElement(modalObj) {
     let styleObj = { zIndex: Modal.defaultZIndex };
-    console.log(this.props.overlayref);
+    // console.log(this.props.overlayref);
     if (typeof this.props.overlayref !== 'undefined') {
       let count = Modal.newFloatingUIContainerElementList.length;
       styleObj = { zIndex: Modal.defaultZIndex + +count };
@@ -140,10 +140,6 @@ export default class Modal extends React.Component {
     }
   }
   static getClassNameOfClosestContainerElement(elemObj) {
-    console.log(
-      elemObj.closest('div[class^=floatingcontainer_]'),
-      typeof elemObj.closest('div[class^=floatingcontainer_]')
-    );
     if (elemObj.closest('div[class^=floatingcontainer_]') !== null) {
       return elemObj.closest('div[class^=floatingcontainer_]').className;
     }
@@ -180,7 +176,7 @@ export default class Modal extends React.Component {
     modalRoot.removeChild(topMostFloatingContainer);
   }
   static removeFloatingUIContainerElement(index, refClass) {
-    console.log(index, refClass);
+    //console.log(index, refClass);
     if (
       Object.keys(Modal.newFloatingUIContainerElementList[index])[0] ===
       refClass
@@ -216,11 +212,6 @@ export default class Modal extends React.Component {
     indexOfDialogElement,
     refClass
   ) {
-    console.log(
-      indexOfDialogElement,
-      refClass,
-      Modal.newFloatingUIContainerElementList[indexOfDialogElement][refClass]
-    );
     Modal.newFloatingUIContainerElementList[indexOfDialogElement][
       refClass
     ].functionReferenceToClose();
@@ -300,18 +291,27 @@ export default class Modal extends React.Component {
     let indexOfContainerElement = Modal.getIndexOfContainerElement(
       this.el.className
     );
-    let indexToFetch =
-      indexOfContainerElement > 0
-        ? indexOfContainerElement - 1
-        : Modal.newFloatingUIContainerElementList.length - 1;
-    let prevElem = Modal.getContainerElement(indexToFetch);
-    prevElem.dialogElemRef.focus();
+    let numberOfDialogs = Modal.newFloatingUIContainerElementList.length;
+    console.log('sizeOfContainerElementList', numberOfDialogs);
+
+    let indexToFetch = -1;
+
+    if (numberOfDialogs > 1) {
+      indexToFetch = numberOfDialogs - 2;
+    }
+    console.log('indexOfContainerElement', indexOfContainerElement);
+    console.log('indexToFetch', indexToFetch);
+    if (indexToFetch !== -1) {
+      let prevElem = Modal.getContainerElement(indexToFetch);
+      prevElem.dialogElemRef.focus();
+    }
     if (!Modal.isEscapeKeyPressed) {
       Modal.removeFloatingUIContainerElement(
         indexOfContainerElement,
         this.el.className
       );
     }
+
     Modal.isEscapeKeyPressed = false;
   }
 
