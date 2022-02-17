@@ -22,6 +22,7 @@ export default class TopMostModal extends React.Component {
         <Modal
           modalrootreference={document.getElementById('modal-root1')}
           reference={this.withoutoverlayref}
+          overlayref={this.props.overlayref}
           closeDialog={() => {
             this.props.closeDialog();
           }}
