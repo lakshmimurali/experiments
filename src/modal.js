@@ -200,8 +200,14 @@ export default class Modal extends React.Component {
         topElement.floatinguicontainerelement.style.zIndex =
           +Modal.defaultZIndex;
       }
+
       if (Modal.newFloatingUIContainerElementList.length === 0) {
         Modal.resetModalBoxValues();
+      } else {
+        let topElem = Modal.getContainerElement(
+          Modal.newFloatingUIContainerElementList.length - 1
+        );
+        topElem.dialogElemRef.focus();
       }
     }
   }
@@ -289,7 +295,7 @@ export default class Modal extends React.Component {
     let indexOfContainerElement = Modal.getIndexOfContainerElement(
       this.el.className
     );
-    let numberOfDialogs = Modal.newFloatingUIContainerElementList.length;
+    /*let numberOfDialogs = Modal.newFloatingUIContainerElementList.length;
     console.log('sizeOfContainerElementList', numberOfDialogs);
 
     let indexToFetch = -1;
@@ -302,7 +308,7 @@ export default class Modal extends React.Component {
     if (indexToFetch !== -1) {
       let prevElem = Modal.getContainerElement(indexToFetch);
       prevElem.dialogElemRef.focus();
-    }
+    }*/
     if (!Modal.isEscapeKeyPressed) {
       Modal.removeFloatingUIContainerElement(
         indexOfContainerElement,
