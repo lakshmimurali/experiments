@@ -8,11 +8,11 @@ import './style.css';
 // render it wherever we like without needing to know that it's
 // implemented with portals.
 
-export default class TopModal extends React.Component {
+export default class TopMostModal extends React.Component {
   constructor(props) {
     super(props);
 
-    this.elementRef = React.createRef();
+    this.withoutoverlayref = React.createRef();
   }
 
   render() {
@@ -21,17 +21,16 @@ export default class TopModal extends React.Component {
       <div>
         <Modal
           modalrootreference={document.getElementById('modal-root1')}
-          reference={this.elementRef}
+          reference={this.withoutoverlayref}
           overlayref={this.props.overlayref}
           closeDialog={() => {
             this.props.closeDialog();
           }}
         >
-          <Dialog
-            elementRef={this.elementRef}
+          <DialogTwo
+            elementRef={this.withoutoverlayref}
             closeDialog={this.props.closeDialog}
-            toggleHandler={this.props.toggleHandler}
-          ></Dialog>
+          ></DialogTwo>
         </Modal>
       </div>
     );

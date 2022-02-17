@@ -20,9 +20,8 @@ export default class TopMostModal extends React.Component {
     return (
       <div>
         <Modal
-          modalrootreference={document.getElementById('modal-root1')}
-          reference={this.withoutoverlayref}
-          overlayref={this.props.overlayref}
+          modalrootreference={document.getElementById('modal-root1')} // can get ID instead of element
+          reference={this.withoutoverlayref} // 1.focusFunction as attribute Can get function to focus 2. based on autofocus we can do
           closeDialog={() => {
             this.props.closeDialog();
           }}
