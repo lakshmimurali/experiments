@@ -66,6 +66,7 @@ export default class App extends React.Component {
     const modal = this.state.showModal ? (
       <Modal
         modalrootreference={document.getElementById('modal-root')}
+        overlayref={this.overlayRef}
         reference={this.elementRef}
         pageref={this.pageRef}
         closeDialog={() => {
@@ -181,7 +182,6 @@ export default class App extends React.Component {
           ) : null}
           {this.state.showModalWithoutOverlay ? (
             <TopMostModal
-              overlayref={this.overlayRef}
               closeDialog={() => {
                 this.handleModalWithoutOverlay();
               }}
