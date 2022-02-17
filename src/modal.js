@@ -64,18 +64,18 @@ export default class Modal extends React.Component {
   }
 
   applyZIndexToFloatingContainerElement(modalObj) {
-    let styleObj = { zIndex: Modal.defaultZIndex };
+    let styleObj = { zIndex: +Modal.defaultZIndex };
     // console.log(this.props.overlayref);
     if (typeof this.props.overlayref !== 'undefined') {
       let count = Modal.newFloatingUIContainerElementList.length;
-      styleObj = { zIndex: Modal.defaultZIndex + +count };
+      styleObj = { zIndex: +Modal.defaultZIndex + +count };
     }
     Object.assign(modalObj.style, styleObj);
   }
 
   persistZIndexValue(elemObj) {
     if (typeof this.props.overlayref !== 'undefined') {
-      Modal.defaultZIndex = elemObj.style.zIndex;
+      Modal.defaultZIndex = +elemObj.style.zIndex;
     }
   }
 
@@ -192,10 +192,8 @@ export default class Modal extends React.Component {
       let modalRoot = floatingContainerObj.modalroot;
       modalRoot.removeChild(floatingContainerElem);
       Modal.newFloatingUIContainerElementList.splice(index, 1);
-      if (
-        isOverlayApplied &&
-        Modal.newFloatingUIContainerElementList.length > 0
-      ) {
+
+      if (Modal.newFloatingUIContainerElementList.length > 0) {
         let topElement = Modal.getContainerElement(
           Modal.newFloatingUIContainerElementList.length - 1
         );
@@ -249,7 +247,7 @@ export default class Modal extends React.Component {
 
   applyZIndexToOverlayEement() {
     if (typeof this.props.overlayref !== 'undefined') {
-      Modal.overlayReference.style.zIndex = Modal.defaultZIndex;
+      Modal.overlayReference.style.zIndex = +Modal.defaultZIndex;
     }
   }
 
