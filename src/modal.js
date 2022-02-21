@@ -13,7 +13,7 @@ export default class Modal extends React.Component {
     this.elemenetRef = React.createRef();
     this.el = document.createElement('div');
     this.el.className = 'floatingcontainer_' + new Date().getTime();
-    this.callBackHandler = this.callBackHandler.bind(this);
+
     this.isEscapeKeyPressed = false;
   }
   static newFloatingUIContainerElementList = [];
@@ -303,6 +303,7 @@ export default class Modal extends React.Component {
   }
 
   render() {
+    console.log('Inside Render');
     // this.props.children.ref = this.elemenetRef;
     // Use a portal to render the children into the element
     return ReactDOM.createPortal(

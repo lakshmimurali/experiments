@@ -1,5 +1,5 @@
 import React from 'react';
-import Modal from './modal.js';
+import Modal from './modal_experiment.js';
 import Dialog from './Dialog.js';
 import './style.css';
 

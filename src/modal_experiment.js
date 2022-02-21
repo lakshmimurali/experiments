@@ -22,9 +22,12 @@ export default class Modal extends React.Component {
     this.bindKeyDownEventToDocument =
       this.bindKeyDownEventToDocument.bind(this);
     this.handleKeyPressEvent = this.handleKeyPressEvent.bind(this);
+    this.isKeyDownEventListenerConfigured = false;
+    console.log(props);
   }
 
   componentDidMount() {
+    console.log('inside cdidmount');
     this.props.modalrootreference.appendChild(this.el);
 
     this.mapFloatingContainerWithDIalogElement();
@@ -46,6 +49,9 @@ export default class Modal extends React.Component {
     this.persistPageElementReference();
 
     this.bindKeyDownEventToDocument();
+  }
+  componentDidUpdate(prevProps, prevState) {
+    console.log(prevProps, prevState);
   }
 
   mapFloatingContainerWithDIalogElement() {
@@ -92,35 +98,26 @@ export default class Modal extends React.Component {
   }
   bindKeyDownEventToDocument() {
     if (!isKeyDownEventListenerConfigured) {
+      document.removeEventListener('keydown', this.handleKeyPressEvent, true);
       document.addEventListener('keydown', this.handleKeyPressEvent, true);
 
       isKeyDownEventListenerConfigured = true;
     }
   }
-  checkStatusOfKeyDownEventBoundToDocument() {
-    return isKeyDownEventListenerConfigured;
-  }
-  setKeyDownEventBoundToDocumentStatusToTrue() {
-    isKeyDownEventListenerConfigured = true;
-  }
+
   handleKeyPressEvent(event) {
     if (event.eventPhase === 3) {
       return false;
     }
     if (event.key === 'Escape') {
+      this.isEscapeKeyPressed = true;
       let floatingDialogContinerClassName =
         this.getClassNameOfClosestContainerElement(event.target);
       let indexOfContainerElement = this.getIndexOfContainerElement(
         floatingDialogContinerClassName
       );
       if (floatingDialogContinerClassName !== undefined) {
-        this.isEscapeKeyPressed = true;
-
         this.invokeCloseCallBackFunctionOfDialogElement(
-          indexOfContainerElement,
-          floatingDialogContinerClassName
-        );
-        this.removeFloatingUIContainerElement(
           indexOfContainerElement,
           floatingDialogContinerClassName
         );
@@ -178,8 +175,8 @@ export default class Modal extends React.Component {
       let floatingContainerElem =
         floatingContainerObj.floatinguicontainerelement;
 
-      let isOverlayApplied = floatingContainerElem.isOverlayNeeded;
-
+      //this.isKeyDownEventListenerConfigured = false;
+      //this.unbindKeyDownEventListener();
       let modalRoot = floatingContainerObj.modalroot;
       modalRoot.removeChild(floatingContainerElem);
       newFloatingUIContainerElementList.splice(index, 1);
@@ -277,21 +274,19 @@ export default class Modal extends React.Component {
     this.unbindKeyDownEventListener();
   }
   componentWillUnmount() {
+    console.log('Inside componentWillUnmount');
     let indexOfContainerElement = this.getIndexOfContainerElement(
       this.el.className
     );
-
-    if (!Modal.isEscapeKeyPressed) {
-      this.removeFloatingUIContainerElement(
-        indexOfContainerElement,
-        this.el.className
-      );
-    }
-
+    this.removeFloatingUIContainerElement(
+      indexOfContainerElement,
+      this.el.className
+    );
     this.isEscapeKeyPressed = false;
   }
 
   render() {
+    console.log('inside render');
     // this.props.children.ref = this.elemenetRef;
     // Use a portal to render the children into the element
     return ReactDOM.createPortal(
