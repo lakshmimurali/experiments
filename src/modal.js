@@ -109,10 +109,12 @@ export default class Modal extends React.Component {
     Modal.isKeyDownEventListenerConfigured = true;
   }
   static handleKeyPressEvent(event) {
+    console.log('event phase in modaljs', event.eventPhase, event.key);
     if (event.eventPhase === 3) {
       return false;
     }
     if (event.key === 'Escape') {
+      console.log('Inside Escape Handler for modal Box, Modal.js');
       let floatingDialogContinerClassName =
         Modal.getClassNameOfClosestContainerElement(event.target);
       let indexOfContainerElement = Modal.getIndexOfContainerElement(
@@ -294,6 +296,7 @@ export default class Modal extends React.Component {
     Modal.unbindKeyDownEventListener();
   }
   componentWillUnmount() {
+    console.log('Inside Component WillUnount handler of modaljs');
     // Remove the element from the DOM when we unmount
     let indexOfContainerElement = Modal.getIndexOfContainerElement(
       this.el.className

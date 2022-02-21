@@ -23,6 +23,7 @@ export default class App extends React.Component {
     this.handleHide = this.handleHide.bind(this);
     this.changeHandler = this.changeHandler.bind(this);
     this.handleModalWithoutOverlay = this.handleModalWithoutOverlay.bind(this);
+    this.escapeHandler = this.escapeHandler.bind(this);
     this.elementRef = React.createRef();
     this.overlayRef = React.createRef();
     this.pageRef = React.createRef();
@@ -43,22 +44,26 @@ export default class App extends React.Component {
     );
   }
   handleTopModal() {
-    console.log('Inside >>>>>>>>>>>>>>>');
     let toggleState = !this.state.showTopModal;
     this.setState({ showTopModal: toggleState });
   }
   handleShow() {
-    console.log('Inside Handle Show');
     this.setState({ showModal: true });
   }
 
   handleHide() {
-    
+    console.log('Inside Handle Hide Method of App');
     let textBoxValue = this.state.textValue;
     let lengthOfTextValue = textBoxValue.length;
     console.log(lengthOfTextValue);
     if (lengthOfTextValue === 0) {
       this.setState({ showModal: false });
+    }
+  }
+  escapeHandler(event) {
+    if (event.key === 'Escape') {
+      console.log('Inside Escape Key Down case for Text Box');
+      this.setState({ textValue: '' });
     }
   }
   changeHandler(event) {
@@ -114,6 +119,7 @@ export default class App extends React.Component {
               ref={this.elementRef}
               value={this.state.textValue}
               onChange={this.changeHandler}
+              onKeyDown={this.escapeHandler}
             />
           </p>
           <br />
