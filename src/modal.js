@@ -2,8 +2,6 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import focusTrap from './focusTrap';
 
-const modalRoot = document.getElementById('modal-root');
-
 export default class Modal extends React.Component {
   constructor(props) {
     super(props);
@@ -165,16 +163,7 @@ export default class Modal extends React.Component {
   static findIndexOfContainerElement(element, floatingDialogContinerClassName) {
     return Object.keys(element)[0] == floatingDialogContinerClassName;
   }
-  static removeTopMostFloatingUIContainerElement() {
-    let topMostFloatingContainerObj =
-      Modal.floatingUIContainerElementList.pop();
 
-    let topMostFloatingContainer =
-      topMostFloatingContainerObj.floatinguicontainerelement;
-
-    let modalRoot = topMostFloatingContainerObj.modalroot;
-    modalRoot.removeChild(topMostFloatingContainer);
-  }
   static removeFloatingUIContainerElement(index, refClass) {
     //console.log(index, refClass);
     if (
@@ -217,7 +206,6 @@ export default class Modal extends React.Component {
     Modal.newFloatingUIContainerElementList[indexOfDialogElement][
       refClass
     ].functionReferenceToClose();
-    //  Modal.removeTopMostFloatingDialogElement().functionReferenceToClose();
   }
 
   static getTopMostFloatingUIContainerElement(refClass) {

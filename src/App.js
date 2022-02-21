@@ -1,5 +1,5 @@
 import React from 'react';
-import Modal from './modal_experiment.js';
+import Modal from './modal.js';
 import TopModal from './topModal.js';
 import TopMostModal from './topmostmodal.js';
 import './style.css';
