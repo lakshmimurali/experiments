@@ -14,18 +14,15 @@ export default class Modal extends React.Component {
     this.el = document.createElement('div');
     this.el.className = 'floatingcontainer_' + new Date().getTime();
     this.callBackHandler = this.callBackHandler.bind(this);
+    this.isEscapeKeyPressed = false;
   }
   static newFloatingUIContainerElementList = [];
   static overlayReference;
   static pageElementReference;
   static defaultZIndex = 0;
   static isKeyDownEventListenerConfigured = false;
-  static isEscapeKeyPressed = false;
+
   componentDidMount() {
-    //console.log('from modal.js', this.props);
-    // Append the element into the DOM on mount. We'll render
-    // into the modal container element (see the HTML tab).
-    //console.log(this.props.modalrootreference);
     this.props.modalrootreference.appendChild(this.el);
 
     this.mapFloatingContainerWithDIalogElement();
@@ -48,9 +45,7 @@ export default class Modal extends React.Component {
 
     this.bindKeyDownEventToDocument();
   }
-  callBackHandler(fromchild) {
-    console.log(fromchild);
-  }
+
   mapFloatingContainerWithDIalogElement() {
     Modal.newFloatingUIContainerElementList.push({
       [this.el.className]: {
@@ -121,7 +116,7 @@ export default class Modal extends React.Component {
         floatingDialogContinerClassName
       );
       if (floatingDialogContinerClassName !== undefined) {
-        Modal.isEscapeKeyPressed = true;
+        this.isEscapeKeyPressed = true;
 
         Modal.invokeCloseCallBackFunctionOfDialogElement(
           indexOfContainerElement,
@@ -191,8 +186,6 @@ export default class Modal extends React.Component {
 
       let floatingContainerElem =
         floatingContainerObj.floatinguicontainerelement;
-
-      let isOverlayApplied = floatingContainerElem.isOverlayNeeded;
 
       let modalRoot = floatingContainerObj.modalroot;
       modalRoot.removeChild(floatingContainerElem);
@@ -306,7 +299,7 @@ export default class Modal extends React.Component {
       this.el.className
     );
 
-    Modal.isEscapeKeyPressed = false;
+    this.isEscapeKeyPressed = false;
   }
 
   render() {

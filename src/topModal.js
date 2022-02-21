@@ -1,7 +1,6 @@
 import React from 'react';
 import Modal from './modal.js';
 import Dialog from './Dialog.js';
-import DialogTwo from './Dialog2.js';
 import './style.css';
 
 // The Modal component is a normal React component, so we can
