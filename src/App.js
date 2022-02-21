@@ -53,7 +53,12 @@ export default class App extends React.Component {
   }
 
   handleHide() {
-    this.setState({ showModal: false });
+    let textBoxValue = this.state.textValue;
+    let lengthOfTextValue = textBoxValue.length;
+    console.log(lengthOfTextValue);
+    if (lengthOfTextValue === 0) {
+      this.setState({ showModal: false });
+    }
   }
   changeHandler(event) {
     this.setState({ textValue: event.target.value });
