@@ -53,6 +53,7 @@ export default class App extends React.Component {
   }
 
   handleHide() {
+    
     let textBoxValue = this.state.textValue;
     let lengthOfTextValue = textBoxValue.length;
     console.log(lengthOfTextValue);
